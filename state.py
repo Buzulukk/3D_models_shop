@@ -21,9 +21,9 @@ type Action = CreateUser | User
 
 def reduce(self, action: Action):
     match action:
-        case CreateUser(user_id):
+        case CreateUser(user_id=user_id):
             self.users[user_id] = user.User(user_id)
-        case User(user_id):
+        case User(user_id=user_id):
             self.users[user_id].reduce(action)
 
 

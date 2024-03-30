@@ -23,9 +23,9 @@ type Action = CreateOrder | RemoveOrder
 
 def reduce(self, action: Action):
     match action:
-        case CreateOrder(order_id):
+        case CreateOrder(order_id=order_id):
             self.orders[order_id] = order.Order(order_id)
-        case RemoveOrder(order_id):
+        case RemoveOrder(order_id=order_id):
             del self.orders[order_id]
 
 
