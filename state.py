@@ -2,6 +2,7 @@ import uuid
 from dataclasses import dataclass
 
 import user
+import effect
 
 
 class CreateUser:
@@ -23,6 +24,7 @@ def reduce(self, action: Action):
     match action:
         case CreateUser(user_id=user_id):
             self.users[user_id] = user.User(user_id)
+            return effect.Nothing  # TODO!!!
         case User(user_id=user_id):
             self.users[user_id].reduce(action)
 

@@ -2,6 +2,7 @@ import uuid
 from dataclasses import dataclass
 
 import order
+import effect
 
 
 class CreateOrder:
@@ -25,8 +26,10 @@ def reduce(self, action: Action):
     match action:
         case CreateOrder(order_id=order_id):
             self.orders[order_id] = order.Order(order_id)
+            return effect.Nothing  # TODO!!!
         case RemoveOrder(order_id=order_id):
             del self.orders[order_id]
+            return effect.Nothing  # TODO!!!
 
 
 @dataclass
