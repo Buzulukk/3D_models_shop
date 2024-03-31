@@ -26,7 +26,16 @@ class SetOrderName:
         self.order_name = order_name
 
 
-type Action = Start | CreateOrder | SetOrderName
+class Questionnaire:
+    order_id: uuid.UUID
+    answer: str
+
+    def __init__(self, order_id: uuid.UUID, answer: str):
+        self.order_id = order_id
+        self.answer = answer
+
+
+type Action = Start | CreateOrder | SetOrderName | Questionnaire
 
 
 def transform(self):
@@ -37,6 +46,8 @@ def transform(self):
             return state.User(self.user_id, user.CreateOrder(order_id))
         case SetOrderName(order_id=order_id, order_name=order_name):
             return state.User(self.user_id, user.Order(order_id, order.SetOrderName(order_name)))
+        case Questionnaire(order_id=order_id, answer=answer):
+            return state.User(self.user_id, user.Order(order_id, order.Questionnaire(answer)))
 
 
 @dataclass

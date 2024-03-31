@@ -9,4 +9,13 @@ class Message:
         self.message = message
 
 
-type Effect = Nothing | Message
+class QuestionnaireQuestion:
+    message: str
+    buttons: [str]
+
+    def __init__(self, message: str, buttons: [str]):
+        self.message = message
+        self.buttons = buttons
+
+
+type Effect = Nothing | Message | QuestionnaireQuestion

@@ -1,6 +1,7 @@
 import uuid
 
 import command
+import order_materials
 import state
 import effect
 
@@ -8,19 +9,24 @@ if __name__ == '__main__':
     main_state = state.State()
 
     # test
-    # main_state.reduce(state.CreateUser(user_id=uuid.uuid4()))
-    # main_state.users[list(main_state.users.keys())[0]].reduce(user.CreateOrder(order_id=uuid.uuid4()))
-    # print(main_state)
-
     some_user_id = uuid.uuid4()
     some_order_id = uuid.uuid4()
     some_order_name = "test name of order"
 
-    command1 = command.Command(some_user_id, command.Start())
-    command2 = command.Command(some_user_id, command.CreateOrder(some_order_id))
-    command3 = command.Command(some_user_id, command.SetOrderName(some_order_id, some_order_name))
+    # questionnaire answers
+    answer_1 = "Да"
+    answer_2 = "Да"
 
-    commands = [command1, command2, command3]
+    command_start = command.Command(some_user_id, command.Start())
+    command_create_order = command.Command(some_user_id, command.CreateOrder(some_order_id))
+    command_set_order_name = command.Command(some_user_id, command.SetOrderName(some_order_id, some_order_name))
+    command_questionnaire_1 = command.Command(some_user_id, command.Questionnaire(some_order_id, ""))
+    command_questionnaire_2 = command.Command(some_user_id, command.Questionnaire(some_order_id, answer_1))
+    command_questionnaire_3 = command.Command(some_user_id, command.Questionnaire(some_order_id, ""))
+    command_questionnaire_4 = command.Command(some_user_id, command.Questionnaire(some_order_id, answer_2))
+
+    commands = [command_start, command_create_order, command_set_order_name, command_questionnaire_1,
+                command_questionnaire_2, command_questionnaire_3, command_questionnaire_4]
 
     for command in commands:
         effects = main_state.reduce(command.transform())
@@ -31,5 +37,8 @@ if __name__ == '__main__':
                     pass
                 case effect.Message(message=message):
                     print(message)
+                case effect.QuestionnaireQuestion(message=message, buttons=buttons):
+                    print(message)
+                    print(buttons)
 
         print(main_state)
