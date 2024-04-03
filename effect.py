@@ -1,3 +1,6 @@
+from materials_files import material
+
+
 class Nothing:
     pass
 
@@ -18,4 +21,11 @@ class QuestionnaireQuestion:
         self.buttons = buttons
 
 
-type Effect = Nothing | Message | QuestionnaireQuestion
+class MaterialsSet:
+    materials_set: set[material.Material]
+
+    def __init__(self, materials_set: set[material.Material]):
+        self.materials_set = materials_set
+
+
+type Effect = Nothing | Message | QuestionnaireQuestion | MaterialsSet
