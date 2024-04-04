@@ -12,12 +12,12 @@ class Response:
         pass
 
 
-def view(self):
+def view(self, deps):
     match self:
         case DrawingsPresent(closeups=closeups):
-            return closeups.view()
+            return closeups.view(deps)
         case DrawingsAbsent(skip=skip):
-            return skip.view()
+            return skip.view(deps)
         case DrawingsUnknown():
             return [
                 effect.QuestionnaireQuestion(
@@ -53,7 +53,7 @@ def get_set(self, material: Material):
                 else closeups.get_set(material) or material_is_drawings
         case DrawingsAbsent(skip=skip):
             return None if skip.get_set(material) is None \
-                else skip.get_set(material) or material_is_drawings
+                else skip.get_set(material) or not material_is_drawings
         case DrawingsUnknown():
             return None
 

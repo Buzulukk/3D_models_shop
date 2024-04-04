@@ -16,10 +16,10 @@ class Response:
         pass
 
 
-def view(self):
+def view(self, deps):
     match self:
         case SkipToApprovalYes(approval=approval):
-            return approval.view()
+            return approval.view(deps)
         case SkipToApprovalNo():
             return [
                 effect.QuestionnaireQuestion(

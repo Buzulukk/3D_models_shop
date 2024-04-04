@@ -16,10 +16,10 @@ class Response:
         pass
 
 
-def view(self):
+def view(self, deps):
     match self:
         case SkipToCloseupsYes(closeups=closeups):
-            return closeups.view()
+            return closeups.view(deps)
         case SkipToCloseupsNo():
             return [
                 effect.QuestionnaireQuestion(

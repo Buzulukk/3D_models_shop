@@ -17,10 +17,10 @@ class Response:
         pass
 
 
-def view(self):
+def view(self, deps):
     match self:
         case DrawingsWithCloseupsPresent(approval=approval):
-            return approval.view()
+            return approval.view(deps)
         case DrawingsWithCloseupsAbsent():
             return [
                 effect.QuestionnaireQuestion(

@@ -13,12 +13,12 @@ class Response:
         pass
 
 
-def view(self):
+def view(self, deps):
     match self:
         case PhotosPresent(drawings=drawings):
-            return drawings.view()
+            return drawings.view(deps)
         case PhotosAbsent(drawings_with_closeups=drawings_with_closeups):
-            return drawings_with_closeups.view()
+            return drawings_with_closeups.view(deps)
         case PhotosUnknown():
             return [
                 effect.QuestionnaireQuestion(
@@ -54,7 +54,7 @@ def get_set(self, material: Material):
                 else drawings.get_set(material) or material_is_photos
         case PhotosAbsent(drawings_with_closeups=drawings_with_closeups):
             return None if drawings_with_closeups.get_set(material) is None \
-                else drawings_with_closeups.get_set(material) or material_is_photos
+                else drawings_with_closeups.get_set(material) or not material_is_photos
         case PhotosUnknown():
             return None
 

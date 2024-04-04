@@ -1,7 +1,8 @@
 import uuid
 
 import command
-from materials_files import material, photos, drawings, closeups, drawingsWithCloseups, approval
+from materials_files import material, photos, drawings, closeups, drawingsWithCloseups, approval, skipToCloseups, \
+    skipToApproval
 import state
 import effect
 
@@ -32,6 +33,8 @@ if __name__ == '__main__':
                     print(buttons)
                 case effect.MaterialsSet(materials_set=materials_set):
                     print(materials_set)
+                case effect.StopQuestionnaire():
+                    break
 
         print(main_state)
 
@@ -44,13 +47,18 @@ if __name__ == '__main__':
     command_answer_2 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id, drawings.Response.ResponseYes()))
     command_answer_3 = command.Command(some_user_id,
-                                       command.QuestionnaireAnswer(some_order_id, closeups.Response.ResponseYes()))
+                                       command.QuestionnaireAnswer(some_order_id,
+                                                                   closeups.Response.ResponseNo()))
     command_answer_4 = command.Command(some_user_id,
+                                       command.QuestionnaireAnswer(some_order_id,
+                                                                   skipToApproval.Response.ResponseYes()))
+    command_answer_5 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id, approval.Response.ResponseYes()))
-    questionnaire_answers = [command_answer_1, command_answer_2, command_answer_3, command_answer_4]
+    questionnaire_answers = [command_answer_1, command_answer_2, command_answer_3, command_answer_4, command_answer_5]
     questionnaire_answers_it = 0
 
-    while main_state.reduce(command_get_set.transform()) == set():
+    flag = True
+    while flag:
         effects = main_state.reduce(command_ask.transform())
         for some_effect in effects:
             match some_effect:
@@ -70,6 +78,11 @@ if __name__ == '__main__':
                                 print("• Чертежи товара")
                             case material.MaterialCloseups():
                                 print("• Фото материалов")
+                case effect.StopQuestionnaire():
+                    flag = False
+
+        if not flag:
+            break
 
         print(questionnaire_answers[questionnaire_answers_it].action.response)
         main_state.reduce(questionnaire_answers[questionnaire_answers_it].transform())
