@@ -83,4 +83,24 @@ if __name__ == '__main__':
         main_state.reduce(questionnaire_answers[questionnaire_answers_it].transform())
         questionnaire_answers_it += 1
 
+    for el in main_state.reduce(command_get_set.transform())[0].materials_set:
+        command_files_ask = command.Command(some_user_id, command.UploadFilesAsk(some_order_id, el))
+        effects = main_state.reduce(command_files_ask.transform())
+        for some_effect in effects:
+            match some_effect:
+                case effect.Nothing():
+                    pass
+                case effect.Message(message=message):
+                    print(message)
+
+        command_files_save = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, el))
+        effects = main_state.reduce(command_files_save.transform())
+        for some_effect in effects:
+            match some_effect:
+                case effect.Nothing():
+                    pass
+                case effect.Message(message=message):
+                    print(message)
+
+    print(main_state)
     print("truly end")

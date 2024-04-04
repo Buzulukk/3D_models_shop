@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from materials_files import materials
+from materials_files.material import Material
 import order
 import state
 import user
@@ -51,7 +52,26 @@ class QuestionnaireCheck:
         self.order_id = order_id
 
 
-type Action = Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck
+class UploadFilesAsk:
+    order_id: uuid.UUID
+    material: Material
+
+    def __init__(self, order_id: uuid.UUID, material: Material):
+        self.order_id = order_id
+        self.material = material
+
+
+class UploadFilesMarkSaved:
+    order_id: uuid.UUID
+    material: Material
+
+    def __init__(self, order_id: uuid.UUID, material: Material):
+        self.order_id = order_id
+        self.material = material
+
+
+type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
+               UploadFilesAsk | UploadFilesMarkSaved)
 
 
 def transform(self):
@@ -68,6 +88,10 @@ def transform(self):
             return state.User(self.user_id, user.Order(order_id, order.Materials(materials.Change(response))))
         case QuestionnaireCheck(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Materials(materials.GetSet())))
+        case UploadFilesAsk(order_id=order_id, material=material):
+            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.UploadFilesAsk(material))))
+        case UploadFilesMarkSaved(order_id=order_id, material=material):
+            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(material))))
 
 
 @dataclass

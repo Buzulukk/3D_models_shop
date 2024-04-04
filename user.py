@@ -35,7 +35,7 @@ def reduce(self, action: Action):
         case CreateOrder(order_id=order_id):
             self.orders[order_id] = order.Order(order_id)
             return [
-                effect.Nothing()
+                effect.Message("Пожалуйста, введите название вашего товара: ")
             ]
         case RemoveOrder(order_id=order_id):
             del self.orders[order_id]
