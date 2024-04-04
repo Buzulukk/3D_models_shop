@@ -28,18 +28,10 @@ if __name__ == '__main__':
                     pass
                 case effect.Message(message=message):
                     print(message)
-                case effect.QuestionnaireQuestion(message=message, buttons=buttons):
-                    print(message)
-                    print(buttons)
-                case effect.MaterialsSet(materials_set=materials_set):
-                    print(materials_set)
-                case effect.StopQuestionnaire():
-                    break
 
-        print(main_state)
+    main_state_before_questionnaire_backup = main_state
 
     command_get_set = command.Command(some_user_id, command.QuestionnaireCheck(some_order_id))
-
     command_ask = command.Command(some_user_id, command.QuestionnaireAsk(some_order_id))
 
     command_answer_1 = command.Command(some_user_id,
@@ -79,6 +71,9 @@ if __name__ == '__main__':
                             case material.MaterialCloseups():
                                 print("• Фото материалов")
                 case effect.StopQuestionnaire():
+                    flag = False
+                case effect.RepeatQuestionnaire():
+                    main_state = main_state_before_questionnaire_backup
                     flag = False
 
         if not flag:

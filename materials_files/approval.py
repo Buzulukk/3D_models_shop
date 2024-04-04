@@ -20,7 +20,8 @@ def view(self, deps):
             ]
         case ApprovalNo():
             return [
-                effect.Message("В таком случае, чтобы во всём убедиться, я проведу опрос заново")
+                effect.Message("В таком случае, чтобы во всём убедиться, я проведу опрос заново"),
+                effect.RepeatQuestionnaire()
             ]
         case ApprovalUnknown():
             question_message = "Таким образом, правильно ли мы понимаем, что у вас есть:\n"

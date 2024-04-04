@@ -22,6 +22,10 @@ class StopQuestionnaire:
     pass
 
 
+class RepeatQuestionnaire:
+    pass
+
+
 class MaterialsSet:
     materials_set: []
 
@@ -29,4 +33,4 @@ class MaterialsSet:
         self.materials_set = materials_set
 
 
-type Effect = Nothing | Message | QuestionnaireQuestion | StopQuestionnaire | MaterialsSet
+type Effect = Nothing | Message | QuestionnaireQuestion | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet
