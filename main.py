@@ -6,6 +6,16 @@ from materials_files import material, photos, drawings, closeups, drawingsWithCl
 import state
 import effect
 
+
+def deal_with_effects(effects: []):
+    for some_effect in effects:
+        match some_effect:
+            case effect.Nothing():
+                pass
+            case effect.Message(message=message):
+                print(message)
+
+
 if __name__ == '__main__':
     main_state = state.State()
 
@@ -20,14 +30,7 @@ if __name__ == '__main__':
     commands = [command1, command2, command3]
 
     for run_command in commands:
-        effects = main_state.reduce(run_command.transform())
-
-        for some_effect in effects:
-            match some_effect:
-                case effect.Nothing():
-                    pass
-                case effect.Message(message=message):
-                    print(message)
+        deal_with_effects(main_state.reduce(run_command.transform()))
 
     main_state_before_questionnaire_backup = main_state
 
@@ -85,22 +88,13 @@ if __name__ == '__main__':
 
     for el in main_state.reduce(command_get_set.transform())[0].materials_set:
         command_files_ask = command.Command(some_user_id, command.UploadFilesAsk(some_order_id, el))
-        effects = main_state.reduce(command_files_ask.transform())
-        for some_effect in effects:
-            match some_effect:
-                case effect.Nothing():
-                    pass
-                case effect.Message(message=message):
-                    print(message)
+        deal_with_effects(main_state.reduce(command_files_ask.transform()))
 
         command_files_save = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, el))
-        effects = main_state.reduce(command_files_save.transform())
-        for some_effect in effects:
-            match some_effect:
-                case effect.Nothing():
-                    pass
-                case effect.Message(message=message):
-                    print(message)
+        deal_with_effects(main_state.reduce(command_files_save.transform()))
+
+    command4 = command.Command(some_user_id, command.SendInfoToManager(some_order_id))
+    deal_with_effects(main_state.reduce(command4.transform()))
 
     print(main_state)
     print("truly end")

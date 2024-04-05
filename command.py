@@ -70,8 +70,15 @@ class UploadFilesMarkSaved:
         self.material = material
 
 
+class SendInfoToManager:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
-               UploadFilesAsk | UploadFilesMarkSaved)
+               UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager)
 
 
 def transform(self):
@@ -91,7 +98,10 @@ def transform(self):
         case UploadFilesAsk(order_id=order_id, material=material):
             return state.User(self.user_id, user.Order(order_id, order.Materials(materials.UploadFilesAsk(material))))
         case UploadFilesMarkSaved(order_id=order_id, material=material):
-            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(material))))
+            return state.User(self.user_id,
+                              user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(material))))
+        case SendInfoToManager(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.SendInfoToManager()))
 
 
 @dataclass

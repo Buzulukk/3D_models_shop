@@ -13,6 +13,10 @@ class SetOrderName:
         self.order_name = order_name
 
 
+class SendInfoToManager:
+    pass
+
+
 class Materials:
     action: materials.Action
 
@@ -20,7 +24,7 @@ class Materials:
         self.action = action
 
 
-type Action = SetOrderName | Materials
+type Action = SetOrderName | SendInfoToManager | Materials
 
 
 def reduce(self, action: Action):
@@ -29,6 +33,10 @@ def reduce(self, action: Action):
             self.order_name = order_name
             return [
                 effect.Nothing()
+            ]
+        case SendInfoToManager():
+            return [
+                effect.Message("Отлично! Ваш заказ принят на расчёт стоимости. Мы свяжемся с вами в течении одного рабочего дня.")
             ]
         case Materials(action=action):
             return self.materials.reduce(action)
