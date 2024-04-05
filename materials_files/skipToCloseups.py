@@ -22,14 +22,14 @@ def view(self, deps):
             return closeups.view(deps)
         case SkipToCloseupsNo():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Хорошо, в таком случае проведите замеры, соберите результаты в файл, после чего нажмите на кнопку “Замеры готовы”",
                     ["Замеры готовы"]
                 )
             ]
         case SkipToCloseupsUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "В этих случаях мы рекомендуем всё же провести базовые измерения основных частей товара для получения наилучшего результата. Однако, если вы считаете, что фото содержат достаточно информации о пропорциях товара, вы можете продолжить без замеров.",
                     ["Продолжить без замеров", "Я проведу замеры"]
                 )

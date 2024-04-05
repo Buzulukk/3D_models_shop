@@ -20,7 +20,7 @@ def view(self, deps):
             return skip.view(deps)
         case DrawingsUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Есть ли у вас чертежи товара с указанием размеров?",
                     ["Да", "Нет"]
                 )

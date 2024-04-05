@@ -20,7 +20,7 @@ def view(self, deps):
             return skip.view(deps)
         case CloseupsUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Есть ли у вас качественные, отражающие цвет и фактуру фото образцов материалов использующихся при производстве?",
                     ["Да", "Нет"]
                 )

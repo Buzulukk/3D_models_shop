@@ -35,7 +35,7 @@ def view(self, deps):
                         question_message += "• Фото материалов\n"
 
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     question_message,
                     ["Верно", "Не совсем"]
                 )

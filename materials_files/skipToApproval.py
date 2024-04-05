@@ -22,14 +22,14 @@ def view(self, deps):
             return approval.view(deps)
         case SkipToApprovalNo():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "В таком случае, сделайте несколько качественных фотографий основных материалов, из которых производится ваш товар, после чего нажмите на кнопку “Фотографии готовы”",
                     ["Фотографии готовы"]
                 )
             ]
         case SkipToApprovalUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Считаете ли вы, что цвет и фактура материалов достаточно хорошо видны на фотографиях товара?",
                     ["Да", "Нет"]
                 )

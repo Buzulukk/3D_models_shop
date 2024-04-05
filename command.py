@@ -55,19 +55,23 @@ class QuestionnaireCheck:
 class UploadFilesAsk:
     order_id: uuid.UUID
     material: Material
+    materials_set: []
 
-    def __init__(self, order_id: uuid.UUID, material: Material):
+    def __init__(self, order_id: uuid.UUID, material: Material, materials_set: []):
         self.order_id = order_id
         self.material = material
+        self.materials_set = materials_set
 
 
 class UploadFilesMarkSaved:
     order_id: uuid.UUID
     material: Material
+    file_id: uuid.UUID
 
-    def __init__(self, order_id: uuid.UUID, material: Material):
+    def __init__(self, order_id: uuid.UUID, material: Material, file_id: uuid.UUID):
         self.order_id = order_id
         self.material = material
+        self.file_id = file_id
 
 
 class SendInfoToManager:
@@ -95,11 +99,12 @@ def transform(self):
             return state.User(self.user_id, user.Order(order_id, order.Materials(materials.Change(response))))
         case QuestionnaireCheck(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Materials(materials.GetSet())))
-        case UploadFilesAsk(order_id=order_id, material=material):
-            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.UploadFilesAsk(material))))
-        case UploadFilesMarkSaved(order_id=order_id, material=material):
+        case UploadFilesAsk(order_id=order_id, material=material, materials_set=materials_set):
             return state.User(self.user_id,
-                              user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(material))))
+                              user.Order(order_id, order.Materials(materials.UploadFilesAsk(material, materials_set))))
+        case UploadFilesMarkSaved(order_id=order_id, material=material, file_id=file_id):
+            return state.User(self.user_id,
+                              user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(file_id, material))))
         case SendInfoToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.SendInfoToManager()))
 

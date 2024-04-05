@@ -23,14 +23,14 @@ def view(self, deps):
             return approval.view(deps)
         case DrawingsWithCloseupsAbsent():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "К сожалению, в таком случае невозможно создать качественную 30 модель. Чтобы продолжить, разработайте чертежи и сделайте качественные, отражающие фактуру фото образов материала, после чего нажмите на кнопку “Чертежи и фото образцов готовы”",
                     ["Чертежи и фото образцов готовы"]
                 )
             ]
         case DrawingsWithCloseupsUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Есть ли у вас чертежи и качественные, отражающие цвет и фактуру фото образцов материалов использующихся при производстве товара?",
                     ["Да", "Нет"]
                 )

@@ -14,6 +14,9 @@ def deal_with_effects(effects: []):
                 pass
             case effect.Message(message=message):
                 print(message)
+            case effect.MessageWithButtons(message=message, buttons=buttons):
+                print(message)
+                print(buttons)
 
 
 if __name__ == '__main__':
@@ -43,13 +46,10 @@ if __name__ == '__main__':
                                        command.QuestionnaireAnswer(some_order_id, drawings.Response.ResponseYes()))
     command_answer_3 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id,
-                                                                   closeups.Response.ResponseNo()))
+                                                                   closeups.Response.ResponseYes()))
     command_answer_4 = command.Command(some_user_id,
-                                       command.QuestionnaireAnswer(some_order_id,
-                                                                   skipToApproval.Response.ResponseYes()))
-    command_answer_5 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id, approval.Response.ResponseYes()))
-    questionnaire_answers = [command_answer_1, command_answer_2, command_answer_3, command_answer_4, command_answer_5]
+    questionnaire_answers = [command_answer_1, command_answer_2, command_answer_3, command_answer_4]
     questionnaire_answers_it = 0
 
     flag = True
@@ -61,7 +61,7 @@ if __name__ == '__main__':
                     pass
                 case effect.Message(message=message):
                     print(message)
-                case effect.QuestionnaireQuestion(message=message, buttons=buttons):
+                case effect.MessageWithButtons(message=message, buttons=buttons):
                     print(message)
                     print(buttons)
                 case effect.MaterialsSet(materials_set=materials_set):
@@ -86,12 +86,14 @@ if __name__ == '__main__':
         main_state.reduce(questionnaire_answers[questionnaire_answers_it].transform())
         questionnaire_answers_it += 1
 
-    for el in main_state.reduce(command_get_set.transform())[0].materials_set:
-        command_files_ask = command.Command(some_user_id, command.UploadFilesAsk(some_order_id, el))
-        deal_with_effects(main_state.reduce(command_files_ask.transform()))
+    materials_set = main_state.reduce(command_get_set.transform())[0].materials_set
+    for active_material in materials_set:
+        command_files = command.Command(some_user_id,
+                                        command.UploadFilesAsk(some_order_id, active_material, materials_set))
+        deal_with_effects(main_state.reduce(command_files.transform()))
 
-        command_files_save = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, el))
-        deal_with_effects(main_state.reduce(command_files_save.transform()))
+        command_files_saved = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, active_material,
+                                                                                         uuid.uuid4()))
 
     command4 = command.Command(some_user_id, command.SendInfoToManager(some_order_id))
     deal_with_effects(main_state.reduce(command4.transform()))

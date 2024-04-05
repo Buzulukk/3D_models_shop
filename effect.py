@@ -9,7 +9,7 @@ class Message:
         self.message = message
 
 
-class QuestionnaireQuestion:
+class MessageWithButtons:
     message: str
     buttons: [str]
 
@@ -33,4 +33,4 @@ class MaterialsSet:
         self.materials_set = materials_set
 
 
-type Effect = Nothing | Message | QuestionnaireQuestion | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet
+type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet

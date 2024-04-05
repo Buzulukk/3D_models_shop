@@ -21,7 +21,7 @@ def view(self, deps):
             return drawings_with_closeups.view(deps)
         case PhotosUnknown():
             return [
-                effect.QuestionnaireQuestion(
+                effect.MessageWithButtons(
                     "Есть ли у вас на данный момент качественные фотографии или рендеры вашего товара со всех сторон?",
                     ["Да", "Нет"]
                 )
