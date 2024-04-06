@@ -173,12 +173,12 @@ def reduce(self, action: Action):
 @dataclass
 class Materials:
     photos: Photos
-    materials_set: []
+    # materials_set: []
     files: dict
 
     def __init__(self, photos: Photos):
         self.photos = photos
-        self.materials_set = []
+        # self.materials_set = []
         self.files = {'photos': [], 'drawings': [], 'closeups': []}
 
     reduce = reduce

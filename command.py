@@ -7,6 +7,7 @@ from materials_files.material import Material
 import order
 import state
 import user
+from stages import stageBase, stageQuest, stageMatter
 
 
 class Start:
@@ -92,21 +93,24 @@ def transform(self):
         case CreateOrder(order_id=order_id):
             return state.User(self.user_id, user.CreateOrder(order_id))
         case SetOrderName(order_id=order_id, order_name=order_name):
-            return state.User(self.user_id, user.Order(order_id, order.SetOrderName(order_name)))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageBase.SetOrderName(order_name))))
         case QuestionnaireAsk(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.View())))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageQuest.Materials(materials.View()))))
         case QuestionnaireAnswer(order_id=order_id, response=response):
-            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.Change(response))))
+            return state.User(self.user_id,
+                              user.Order(order_id, order.Stage(stageQuest.Materials(materials.Change(response)))))
         case QuestionnaireCheck(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Materials(materials.GetSet())))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageQuest.Materials(materials.GetSet()))))
         case UploadFilesAsk(order_id=order_id, material=material, materials_set=materials_set):
             return state.User(self.user_id,
-                              user.Order(order_id, order.Materials(materials.UploadFilesAsk(material, materials_set))))
+                              user.Order(order_id, order.Stage(
+                                  stageQuest.Materials(materials.UploadFilesAsk(material, materials_set)))))
         case UploadFilesMarkSaved(order_id=order_id, material=material, file_id=file_id):
             return state.User(self.user_id,
-                              user.Order(order_id, order.Materials(materials.UploadFilesMarkSaved(file_id, material))))
+                              user.Order(order_id, order.Stage(
+                                  stageQuest.Materials(materials.UploadFilesMarkSaved(file_id, material)))))
         case SendInfoToManager(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.SendInfoToManager()))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.SendInfoToManager())))
 
 
 @dataclass
