@@ -16,11 +16,9 @@ type Action = Stage
 
 def reduce(self, action: Action):
     match self.stage:
-        case stage.Base(body=body):
-            match body:
-                case stageBase.Base(name=name):
-                    if name is not None:  # move to the next stage if name is not None
-                        self.stage = stage.Quest(stage.BaseReified(name), stageQuest.Quest())
+        case stage.Base(body=stageBase.Base(name=name)):
+            if name is not None:  # move to the next stage if name is not None
+                self.stage = stage.Quest(stage.BaseReified(name), stageQuest.Quest())
         case stage.Quest(base=base, body=body):
             match body:
                 case stageQuest.Quest(materials=materials):
