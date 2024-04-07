@@ -82,8 +82,17 @@ class SendInfoToManager:
         self.order_id = order_id
 
 
+class GetInfoFromManager:
+    order_id: uuid.UUID
+    price: int
+
+    def __init__(self, order_id: uuid.UUID, price: int):
+        self.order_id = order_id
+        self.price = price
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
-               UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager)
+               UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager)
 
 
 def transform(self):
@@ -111,7 +120,8 @@ def transform(self):
                                   stageQuest.Materials(materials.UploadFilesMarkSaved(file_id, material)))))
         case SendInfoToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.SendInfoToManager())))
-
+        case GetInfoFromManager(order_id=order_id, price=price):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.GetInfoFromManager(price))))
 
 @dataclass
 class Command:

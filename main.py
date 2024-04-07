@@ -98,5 +98,8 @@ if __name__ == '__main__':
     command4 = command.Command(some_user_id, command.SendInfoToManager(some_order_id))
     deal_with_effects(main_state.reduce(command4.transform()))
 
+    command5 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, 4200))
+    deal_with_effects(main_state.reduce(command5.transform()))
+
     print(main_state)
     print("truly end")
