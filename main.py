@@ -116,9 +116,11 @@ if __name__ == '__main__':
     command7 = command.Command(some_user_id,
                                command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
     command8 = command.Command(some_user_id, command.SendContract(some_order_id))
-    commands = [command4, command5, command6, command7, command8]
+    command9 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
+    commands = [command4, command5, command6, command7, command8, command9]
     for run_command in commands:
         deal_with_effects(main_state.reduce(run_command.transform()))
 
+    print()
     print(main_state)
     print("truly end")

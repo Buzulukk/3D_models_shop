@@ -43,7 +43,11 @@ class SendContract:
     pass
 
 
-type Action = CreateContract | AsIndividual | AsCompany | SendContract
+class SendContractToManager:
+    pass
+
+
+type Action = CreateContract | AsIndividual | AsCompany | SendContract | SendContractToManager
 
 
 def reduce(self, action: Action):
@@ -72,6 +76,10 @@ def reduce(self, action: Action):
             return [
                 effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
                 effect.Contract(self.contract)
+            ]
+        case SendContractToManager():
+            return [
+                effect.Message("Отлично. Договор отправлен для проверки менеджеру. Это займёт не больше часа в рабочее время, после чего мы тут-же с вами свяжемся.")
             ]
 
 

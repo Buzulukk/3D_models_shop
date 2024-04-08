@@ -140,9 +140,16 @@ class SendContract:
         self.order_id = order_id
 
 
+class SendContractToManager:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
                UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
-               AsIndividual | AsCompany | SendContract)
+               AsIndividual | AsCompany | SendContract | SendContractToManager)
 
 
 def transform(self):
@@ -185,6 +192,8 @@ def transform(self):
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
         case SendContract(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContract())))
+        case SendContractToManager(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
 
 
 @dataclass
