@@ -29,7 +29,7 @@ def reduce(self, action: Action):
         case stage.Matter(base=base, quest=quest, body=body):
             match action.action:
                 case stageContract.CreateContract(price=price):
-                    self.stage = stage.Contract(base, quest, stage.MatterReified(price), stageContract.Contract(None))
+                    self.stage = stage.Contract(base, quest, stage.MatterReified(price), stageContract.Contract(None, None))
 
     match action:
         case Stage(action=action):

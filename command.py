@@ -147,9 +147,25 @@ class SendContractToManager:
         self.order_id = order_id
 
 
+class PrePayment:
+    order_id: uuid.UUID
+    price: int
+
+    def __init__(self, order_id: uuid.UUID, price: int):
+        self.order_id = order_id
+        self.price = price
+
+
+class PrePaymentComplete:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
                UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
-               AsIndividual | AsCompany | SendContract | SendContractToManager)
+               AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete)
 
 
 def transform(self):
@@ -194,6 +210,10 @@ def transform(self):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContract())))
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
+        case PrePayment(order_id=order_id, price=price):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.PrePayment(price))))
+        case PrePaymentComplete(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.PrePaymentComplete())))
 
 
 @dataclass

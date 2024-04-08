@@ -32,7 +32,7 @@ def view(self, deps):
                     case material.MaterialDrawings():
                         question_message += "• Чертежи товара\n"
                     case material.MaterialCloseups():
-                        question_message += "• Фото материалов\n"
+                        question_message += "• Фото материалов"
 
             return [
                 effect.MessageWithButtons(
