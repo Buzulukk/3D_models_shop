@@ -1,3 +1,4 @@
+import datetime
 import uuid
 from dataclasses import dataclass
 from typing import Any
@@ -7,7 +8,7 @@ from materials_files.material import Material
 import order
 import state
 import user
-from stages import stageBase, stageQuest, stageMatter
+from stages import stageBase, stageQuest, stageMatter, stageContract
 
 
 class Start:
@@ -91,8 +92,50 @@ class GetInfoFromManager:
         self.price = price
 
 
+class CreateContract:
+    order_id: uuid.UUID
+    price: int
+
+    def __init__(self, order_id: uuid.UUID, price: int):
+        self.order_id = order_id
+        self.price = price
+
+
+class AsIndividual:
+    order_id: uuid.UUID
+    full_name: str
+    birthday: datetime.datetime
+    passport_number: str
+    issued_by: str
+    issued_by_number: str
+    address: str
+
+    def __init__(self, full_name: str, birthday: datetime.datetime, passport_number: str, issued_by: str,
+                 issued_by_number: str, address: str):
+        self.full_name = full_name
+        self.birthday = birthday
+        self.passport_number = passport_number
+        self.issued_by = issued_by
+        self.issued_by_number = issued_by_number
+        self.address = address
+
+
+class AsCompany:
+    order_id: uuid.UUID
+    full_name: str
+    position: str
+    taxpayer_number: str
+
+    def __init__(self, order_id: uuid.UUID, full_name: str, position: str, taxpayer_number: str):
+        self.order_id = order_id
+        self.full_name = full_name
+        self.position = position
+        self.taxpayer_number = taxpayer_number
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
-               UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager)
+               UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
+               AsIndividual | AsCompany)
 
 
 def transform(self):
@@ -122,6 +165,18 @@ def transform(self):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.SendInfoToManager())))
         case GetInfoFromManager(order_id=order_id, price=price):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.GetInfoFromManager(price))))
+        case CreateContract(order_id=order_id, price=price):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.CreateContract(price))))
+        case AsIndividual(order_id=order_id, full_name=full_name, birthday=birthday, passport_number=passport_number,
+                          issued_by=issued_by,
+                          issued_by_number=issued_by_number, address=address):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(
+                stageContract.AsIndividual(full_name, birthday, passport_number, issued_by, issued_by_number,
+                                           address))))
+        case AsCompany(order_id=order_id, full_name=full_name, position=position, taxpayer_number=taxpayer_number):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(
+                stageContract.AsCompany(full_name, position, taxpayer_number))))
+
 
 @dataclass
 class Command:

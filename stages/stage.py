@@ -1,4 +1,4 @@
-from stages import stageBase, stageQuest, stageMatter
+from stages import stageBase, stageQuest, stageMatter, stageContract
 
 
 class BaseReified:
@@ -15,18 +15,18 @@ class QuestReified:
         self.materials_set = materials_set
 
 
-type Action = stageBase.Action | stageQuest.Action | stageMatter.Action
+class MatterReified:
+    price: int
+
+    def __init__(self, price: int):
+        self.price = price
+
+
+type Action = stageBase.Action | stageQuest.Action | stageMatter.Action | stageContract.Action
 
 
 def reduce(self, action: Action):
     return self.body.reduce(action)
-    # match action:
-    #     case stageBase.Action():
-    #         self.body
-    #     case stageQuest.Action():
-    #         pass
-    #     case stageMatter.Action():
-    #         pass
 
 
 class Base:
@@ -62,10 +62,19 @@ class Matter:
     reduce = reduce
 
 
-# def reduce(self, action: Action):
-#     return self.reduce(action)
+class Contract:
+    base: BaseReified
+    quest: QuestReified
+    matter: MatterReified
+    body: stageContract.Contract
+
+    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, body: stageContract.Contract):
+        self.base = base
+        self.quest = quest
+        self.matter = matter
+        self.body = body
+
+    reduce = reduce
 
 
-type Stage = Base | Quest | Matter
-
-# Stage.reduce = reduce
+type Stage = Base | Quest | Matter | Contract

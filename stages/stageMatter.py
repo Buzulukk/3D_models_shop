@@ -23,6 +23,7 @@ def reduce(self, action: Action):
                     "Отлично! Ваш заказ принят на расчёт стоимости. Мы свяжемся с вами в течении одного рабочего дня.")
             ]
         case GetInfoFromManager(price=price):
+            self.price = price
             return [
                 effect.MessageWithButtons(
                     "Отличные новости! Расчет по вашей модели готов, её создание будет стоить " + str(price) + " ₽.",
@@ -32,4 +33,6 @@ def reduce(self, action: Action):
 
 
 class Matter:
+    price: int
+
     reduce = reduce

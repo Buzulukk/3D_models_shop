@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
-from stages import stage, stageBase, stageQuest, stageMatter
+from stages import stage, stageBase, stageQuest, stageMatter, stageContract
 
 
 class Stage:
@@ -26,6 +26,10 @@ def reduce(self, action: Action):
                     match action.action:
                         case stageMatter.SendInfoToManager():  # move to the next stage if command from the next stage are called
                             self.stage = stage.Matter(base, stage.QuestReified(materials_set), stageMatter.Matter())
+        case stage.Matter(base=base, quest=quest, body=body):
+            match action.action:
+                case stageContract.CreateContract(price=price):
+                    self.stage = stage.Contract(base, quest, stage.MatterReified(price), stageContract.Contract(None))
 
     match action:
         case Stage(action=action):

@@ -25,6 +25,10 @@ if __name__ == '__main__':
     some_user_id = uuid.uuid4()
     some_order_id = uuid.uuid4()
     some_order_name = "test name of order"
+    some_price = 4200
+    some_full_name = "Ryan Thomas Gosling"
+    some_position = "Hollywood actor"
+    some_taxpayer_number = "0123456789"
 
     command1 = command.Command(some_user_id, command.Start())
     command2 = command.Command(some_user_id, command.CreateOrder(some_order_id))
@@ -96,10 +100,13 @@ if __name__ == '__main__':
                                                                                          uuid.uuid4()))
 
     command4 = command.Command(some_user_id, command.SendInfoToManager(some_order_id))
-    deal_with_effects(main_state.reduce(command4.transform()))
-
-    command5 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, 4200))
-    deal_with_effects(main_state.reduce(command5.transform()))
+    command5 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, some_price))
+    command6 = command.Command(some_user_id, command.CreateContract(some_order_id, some_price))
+    command7 = command.Command(some_user_id,
+                               command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
+    commands = [command4, command5, command6, command7]
+    for run_command in commands:
+        deal_with_effects(main_state.reduce(run_command.transform()))
 
     print(main_state)
     print("truly end")
