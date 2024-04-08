@@ -133,9 +133,16 @@ class AsCompany:
         self.taxpayer_number = taxpayer_number
 
 
+class SendContract:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
                UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
-               AsIndividual | AsCompany)
+               AsIndividual | AsCompany | SendContract)
 
 
 def transform(self):
@@ -176,6 +183,8 @@ def transform(self):
         case AsCompany(order_id=order_id, full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             return state.User(self.user_id, user.Order(order_id, order.Stage(
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
+        case SendContract(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContract())))
 
 
 @dataclass

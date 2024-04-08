@@ -1,3 +1,6 @@
+from typing import Any
+
+
 class Nothing:
     pass
 
@@ -33,4 +36,11 @@ class MaterialsSet:
         self.materials_set = materials_set
 
 
-type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet
+class Contract:
+    contract: Any  # change to file type later
+
+    def __init__(self, contract: Any):
+        self.contract = contract
+
+
+type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet | Contract

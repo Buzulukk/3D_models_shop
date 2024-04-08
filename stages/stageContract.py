@@ -39,7 +39,11 @@ class AsCompany:
         self.taxpayer_number = taxpayer_number
 
 
-type Action = CreateContract | AsIndividual | AsCompany
+class SendContract:
+    pass
+
+
+type Action = CreateContract | AsIndividual | AsCompany | SendContract
 
 
 def reduce(self, action: Action):
@@ -63,6 +67,11 @@ def reduce(self, action: Action):
             self.contract = CompanyContract(full_name, position, taxpayer_number)
             return [
                 effect.Nothing()
+            ]
+        case SendContract():
+            return [
+                effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
+                effect.Contract(self.contract)
             ]
 
 

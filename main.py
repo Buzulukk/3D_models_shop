@@ -5,6 +5,7 @@ from materials_files import material, photos, drawings, closeups, drawingsWithCl
     skipToApproval
 import state
 import effect
+import contract
 
 
 def deal_with_effects(effects: []):
@@ -17,6 +18,16 @@ def deal_with_effects(effects: []):
             case effect.MessageWithButtons(message=message, buttons=buttons):
                 print(message)
                 print(buttons)
+            case effect.Contract(contract=some_contract):
+                match some_contract:
+                    case contract.IndividualContract(full_name=full_name, birthday=birthday,
+                                                     passport_number=passport_number, issued_by=issued_by,
+                                                     issued_by_number=issued_by_number, address=address):
+                        print(full_name, '•', birthday, '•', passport_number, '•', issued_by, '•', issued_by_number,
+                              '•', address)
+                    case contract.CompanyContract(full_name=full_name, position=position,
+                                                  taxpayer_number=taxpayer_number):
+                        print(full_name, '•', position, '•', taxpayer_number)
 
 
 if __name__ == '__main__':
@@ -104,7 +115,8 @@ if __name__ == '__main__':
     command6 = command.Command(some_user_id, command.CreateContract(some_order_id, some_price))
     command7 = command.Command(some_user_id,
                                command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
-    commands = [command4, command5, command6, command7]
+    command8 = command.Command(some_user_id, command.SendContract(some_order_id))
+    commands = [command4, command5, command6, command7, command8]
     for run_command in commands:
         deal_with_effects(main_state.reduce(run_command.transform()))
 
