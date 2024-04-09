@@ -79,15 +79,6 @@ if __name__ == '__main__':
                 case effect.MessageWithButtons(message=message, buttons=buttons):
                     print(message)
                     print(buttons)
-                case effect.MaterialsSet(materials_set=materials_set):
-                    for el in materials_set:
-                        match el:
-                            case material.MaterialPhotos():
-                                print("• Фото товара")
-                            case material.MaterialDrawings():
-                                print("• Чертежи товара")
-                            case material.MaterialCloseups():
-                                print("• Фото материалов")
                 case effect.StopQuestionnaire():
                     flag = False
                 case effect.RepeatQuestionnaire():
@@ -101,7 +92,7 @@ if __name__ == '__main__':
         main_state.reduce(questionnaire_answers[questionnaire_answers_it].transform())
         questionnaire_answers_it += 1
 
-    materials_set = main_state.reduce(command_get_set.transform())[0].materials_set
+    materials_set = main_state.reduce(command_get_set.transform())
     for active_material in materials_set:
         command_files = command.Command(some_user_id,
                                         command.UploadFilesAsk(some_order_id, active_material, materials_set))

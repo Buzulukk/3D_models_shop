@@ -67,9 +67,7 @@ def get_set(self):
         if self.photos.get_set(el):
             materials_set.append(el)
 
-    return [
-        effect.MaterialsSet(materials_set)
-    ]
+    return materials_set
 
 
 def reduce(self, action: Action):

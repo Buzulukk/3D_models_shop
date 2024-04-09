@@ -29,13 +29,6 @@ class RepeatQuestionnaire:
     pass
 
 
-class MaterialsSet:
-    materials_set: []
-
-    def __init__(self, materials_set: []):
-        self.materials_set = materials_set
-
-
 class Contract:
     contract: Any  # change to file type later
 
@@ -43,4 +36,4 @@ class Contract:
         self.contract = contract
 
 
-type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | MaterialsSet | Contract
+type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | Contract

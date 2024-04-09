@@ -25,7 +25,7 @@ def view(self, deps):
             ]
         case ApprovalUnknown():
             question_message = "Таким образом, правильно ли мы понимаем, что у вас есть:\n"
-            for el in deps['get_set_func']()[0].materials_set:
+            for el in deps['get_set_func']():
                 match el:
                     case material.MaterialPhotos():
                         question_message += "• Фото товара\n"
