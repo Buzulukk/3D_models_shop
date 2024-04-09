@@ -36,6 +36,15 @@ def reduce(self, action: Action):
             return self.stage.reduce(action)
 
 
+def view(self):
+    match self.stage:
+        case stage.Base(body=stageBase.Base(name=name)):
+            if name is not None:  # move to the next stage if name is not None
+                self.stage = stage.Quest(stage.BaseReified(name), stageQuest.Quest())
+
+    return self.stage.view()
+
+
 @dataclass
 class Order:
     order_id: uuid.UUID
@@ -46,3 +55,4 @@ class Order:
         self.stage = stage.Base(stageBase.Base(None))
 
     reduce = reduce
+    view = view

@@ -17,6 +17,10 @@ def reduce(self, action: Action):
             return self.materials.reduce(action)
 
 
+def view(self):
+    return self.materials.view()
+
+
 class Quest:
     materials: materials.Materials
 
@@ -24,3 +28,4 @@ class Quest:
         self.materials = materials.Materials(photos.PhotosUnknown())
 
     reduce = reduce
+    view = view

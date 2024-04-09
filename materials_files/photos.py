@@ -20,12 +20,10 @@ def view(self, deps):
         case PhotosAbsent(drawings_with_closeups=drawings_with_closeups):
             return drawings_with_closeups.view(deps)
         case PhotosUnknown():
-            return [
-                effect.MessageWithButtons(
-                    "Есть ли у вас на данный момент качественные фотографии или рендеры вашего товара со всех сторон?",
-                    ["Да", "Нет"]
-                )
-            ]
+            return {
+                'message': "Есть ли у вас на данный момент качественные фотографии или рендеры вашего товара со всех сторон?",
+                'buttons': ["Да", "Нет"]
+            }
 
 
 def action(self, response):

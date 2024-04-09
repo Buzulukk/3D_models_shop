@@ -53,7 +53,6 @@ if __name__ == '__main__':
     main_state_before_questionnaire_backup = main_state
 
     command_get_set = command.Command(some_user_id, command.QuestionnaireCheck(some_order_id))
-    command_ask = command.Command(some_user_id, command.QuestionnaireAsk(some_order_id))
 
     command_answer_1 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id, photos.Response.ResponseYes()))
@@ -67,25 +66,13 @@ if __name__ == '__main__':
     questionnaire_answers = [command_answer_1, command_answer_2, command_answer_3, command_answer_4]
     questionnaire_answers_it = 0
 
-    flag = True
-    while flag:
-        effects = main_state.reduce(command_ask.transform())
-        for some_effect in effects:
-            match some_effect:
-                case effect.Nothing():
-                    pass
-                case effect.Message(message=message):
-                    print(message)
-                case effect.MessageWithButtons(message=message, buttons=buttons):
-                    print(message)
-                    print(buttons)
-                case effect.StopQuestionnaire():
-                    flag = False
-                case effect.RepeatQuestionnaire():
-                    main_state = main_state_before_questionnaire_backup
-                    flag = False
+    while True:
+        questionnaire_question = main_state.view(some_user_id, some_order_id)
 
-        if not flag:
+        print(questionnaire_question['message'])
+        print(questionnaire_question.get('buttons'))
+
+        if questionnaire_question['message'] == "Завершение опроса":
             break
 
         print(questionnaire_answers[questionnaire_answers_it].action.response)

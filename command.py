@@ -31,13 +31,6 @@ class SetOrderName:
         self.order_name = order_name
 
 
-class QuestionnaireAsk:
-    order_id: uuid.UUID
-
-    def __init__(self, order_id: uuid.UUID):
-        self.order_id = order_id
-
-
 class QuestionnaireAnswer:
     order_id: uuid.UUID
     response: Any
@@ -163,7 +156,7 @@ class PrePaymentComplete:
         self.order_id = order_id
 
 
-type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAsk | QuestionnaireAnswer | QuestionnaireCheck |
+type Action = (Start | CreateOrder | SetOrderName | QuestionnaireAnswer | QuestionnaireCheck |
                UploadFilesAsk | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
                AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete)
 
@@ -176,8 +169,6 @@ def transform(self):
             return state.User(self.user_id, user.CreateOrder(order_id))
         case SetOrderName(order_id=order_id, order_name=order_name):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageBase.SetOrderName(order_name))))
-        case QuestionnaireAsk(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageQuest.Materials(materials.View()))))
         case QuestionnaireAnswer(order_id=order_id, response=response):
             return state.User(self.user_id,
                               user.Order(order_id, order.Stage(stageQuest.Materials(materials.Change(response)))))

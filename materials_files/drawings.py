@@ -19,12 +19,10 @@ def view(self, deps):
         case DrawingsAbsent(skip=skip):
             return skip.view(deps)
         case DrawingsUnknown():
-            return [
-                effect.MessageWithButtons(
-                    "Есть ли у вас чертежи товара с указанием размеров?",
-                    ["Да", "Нет"]
-                )
-            ]
+            return {
+                'message': "Есть ли у вас чертежи товара с указанием размеров?",
+                'buttons': ["Да", "Нет"]
+            }
 
 
 def action(self, response):

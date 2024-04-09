@@ -29,6 +29,10 @@ def reduce(self, action: Action):
     return self.body.reduce(action)
 
 
+def view(self):
+    return self.body.view()
+
+
 class Base:
     body: stageBase.Base
 
@@ -47,6 +51,7 @@ class Quest:
         self.body = body
 
     reduce = reduce
+    view = view
 
 
 class Matter:

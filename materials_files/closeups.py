@@ -19,12 +19,10 @@ def view(self, deps):
         case CloseupsAbsent(skip=skip):
             return skip.view(deps)
         case CloseupsUnknown():
-            return [
-                effect.MessageWithButtons(
-                    "Есть ли у вас качественные, отражающие цвет и фактуру фото образцов материалов использующихся при производстве?",
-                    ["Да", "Нет"]
-                )
-            ]
+            return {
+                'message': "Есть ли у вас качественные, отражающие цвет и фактуру фото образцов материалов использующихся при производстве?",
+                'buttons': ["Да", "Нет"]
+            }
 
 
 def action(self, response):

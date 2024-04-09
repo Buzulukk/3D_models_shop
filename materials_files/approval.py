@@ -14,15 +14,13 @@ class Response:
 def view(self, deps):
     match self:
         case ApprovalYes():
-            return [
-                effect.Message("Завершение опроса"),
-                effect.StopQuestionnaire()
-            ]
+            return {
+                'message': "Завершение опроса"
+            }
         case ApprovalNo():
-            return [
-                effect.Message("В таком случае, чтобы во всём убедиться, я проведу опрос заново"),
-                effect.RepeatQuestionnaire()
-            ]
+            return {
+                'message': "В таком случае, чтобы во всём убедиться, я проведу опрос заново"
+            }
         case ApprovalUnknown():
             question_message = "Таким образом, правильно ли мы понимаем, что у вас есть:\n"
             for el in deps['get_set_func']():
@@ -34,12 +32,10 @@ def view(self, deps):
                     case material.MaterialCloseups():
                         question_message += "• Фото материалов"
 
-            return [
-                effect.MessageWithButtons(
-                    question_message,
-                    ["Верно", "Не совсем"]
-                )
-            ]
+            return {
+                'message': question_message,
+                'buttons': ["Верно", "Не совсем"]
+            }
 
 
 def action(self, response):

@@ -8,10 +8,6 @@ from materials_files.photos import Photos
 from materials_files.file import File
 
 
-class View:
-    pass
-
-
 class Change:
     response: Any
 
@@ -45,11 +41,11 @@ class UploadFilesReady:
     pass
 
 
-type Action = View | Change | GetSet | UploadFilesAsk | UploadFilesMarkSaved | UploadFilesReady
+type Action = Change | GetSet | UploadFilesAsk | UploadFilesMarkSaved | UploadFilesReady
 
 
-def view(self, deps):
-    return self.photos.view(deps)
+def view(self):
+    return self.photos.view({'get_set_func': self.get_set})
 
 
 def action(self, response):
@@ -72,8 +68,6 @@ def get_set(self):
 
 def reduce(self, action: Action):
     match action:
-        case View():
-            return self.view({'get_set_func': self.get_set})
         case Change(response=response):
             return self.action(response)
         case GetSet():
@@ -171,12 +165,10 @@ def reduce(self, action: Action):
 @dataclass
 class Materials:
     photos: Photos
-    # materials_set: []
     files: dict
 
     def __init__(self, photos: Photos):
         self.photos = photos
-        # self.materials_set = []
         self.files = {'photos': [], 'drawings': [], 'closeups': []}
 
     reduce = reduce

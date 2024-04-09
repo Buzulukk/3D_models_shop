@@ -46,6 +46,11 @@ def reduce(self, action: Action):
             return self.orders[order_id].reduce(action)
 
 
+def view(self, order_id: uuid.UUID):
+    return self.orders[order_id].view()
+
+
+
 @dataclass
 class User:
     user_id: uuid.UUID
@@ -56,3 +61,4 @@ class User:
         self.orders = {}
 
     reduce = reduce
+    view = view
