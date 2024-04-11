@@ -21,6 +21,10 @@ def view(self):
     return self.materials.view()
 
 
+def get_set(self):
+    return self.materials.get_set()
+
+
 class Quest:
     materials: materials.Materials
 
@@ -29,3 +33,4 @@ class Quest:
 
     reduce = reduce
     view = view
+    get_set = get_set

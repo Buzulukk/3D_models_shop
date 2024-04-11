@@ -39,6 +39,10 @@ def view(self, user_id: uuid.UUID, order_id: uuid.UUID):
     return self.users[user_id].view(order_id)
 
 
+def get_set(self, user_id: uuid.UUID, order_id: uuid.UUID):
+    return self.users[user_id].get_set(order_id)
+
+
 @dataclass
 class State:
     users: {uuid.UUID, user.User}
@@ -48,3 +52,4 @@ class State:
 
     reduce = reduce
     view = view
+    get_set = get_set

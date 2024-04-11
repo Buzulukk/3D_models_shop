@@ -52,8 +52,6 @@ if __name__ == '__main__':
 
     main_state_before_questionnaire_backup = main_state
 
-    command_get_set = command.Command(some_user_id, command.QuestionnaireCheck(some_order_id))
-
     command_answer_1 = command.Command(some_user_id,
                                        command.QuestionnaireAnswer(some_order_id, photos.Response.ResponseYes()))
     command_answer_2 = command.Command(some_user_id,
@@ -79,7 +77,7 @@ if __name__ == '__main__':
         main_state.reduce(questionnaire_answers[questionnaire_answers_it].transform())
         questionnaire_answers_it += 1
 
-    materials_set = main_state.reduce(command_get_set.transform())
+    materials_set = main_state.get_set(some_user_id, some_order_id)
     for active_material in materials_set:
         command_files = command.Command(some_user_id,
                                         command.UploadFilesAsk(some_order_id, active_material, materials_set))

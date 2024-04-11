@@ -33,6 +33,10 @@ def view(self):
     return self.body.view()
 
 
+def get_set(self):
+    return self.body.get_set()
+
+
 class Base:
     body: stageBase.Base
 
@@ -52,6 +56,7 @@ class Quest:
 
     reduce = reduce
     view = view
+    get_set = get_set
 
 
 class Matter:

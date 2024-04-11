@@ -50,6 +50,9 @@ def view(self, order_id: uuid.UUID):
     return self.orders[order_id].view()
 
 
+def get_set(self, order_id: uuid.UUID):
+    return self.orders[order_id].get_set()
+
 
 @dataclass
 class User:
@@ -62,3 +65,4 @@ class User:
 
     reduce = reduce
     view = view
+    get_set = get_set

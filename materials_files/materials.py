@@ -15,10 +15,6 @@ class Change:
         self.response = response
 
 
-class GetSet:
-    pass
-
-
 class UploadFilesAsk:
     material: Material
     materials_set: []
@@ -41,7 +37,7 @@ class UploadFilesReady:
     pass
 
 
-type Action = Change | GetSet | UploadFilesAsk | UploadFilesMarkSaved | UploadFilesReady
+type Action = Change | UploadFilesAsk | UploadFilesMarkSaved | UploadFilesReady
 
 
 def view(self):
@@ -70,8 +66,6 @@ def reduce(self, action: Action):
     match action:
         case Change(response=response):
             return self.action(response)
-        case GetSet():
-            return self.get_set()
         case UploadFilesAsk(material=material, materials_set=materials_set):
             match material:
                 case MaterialPhotos():

@@ -29,7 +29,8 @@ def reduce(self, action: Action):
         case stage.Matter(base=base, quest=quest, body=body):
             match action.action:
                 case stageContract.CreateContract(price=price):
-                    self.stage = stage.Contract(base, quest, stage.MatterReified(price), stageContract.Contract(None, None))
+                    self.stage = stage.Contract(base, quest, stage.MatterReified(price),
+                                                stageContract.Contract(None, None))
 
     match action:
         case Stage(action=action):
@@ -45,6 +46,10 @@ def view(self):
     return self.stage.view()
 
 
+def get_set(self):
+    return self.stage.get_set()
+
+
 @dataclass
 class Order:
     order_id: uuid.UUID
@@ -56,3 +61,4 @@ class Order:
 
     reduce = reduce
     view = view
+    get_set = get_set
