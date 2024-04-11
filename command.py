@@ -51,11 +51,14 @@ class UploadFilesMarkSaved:
         self.file_id = file_id
 
 
-class SendInfoToManager:
+class UploadFilesReady:
     order_id: uuid.UUID
+    materials_set: []
 
-    def __init__(self, order_id: uuid.UUID):
+    def __init__(self, order_id: uuid.UUID, materials_set: []):
         self.order_id = order_id
+        self.materials_set = materials_set
+
 
 
 class GetInfoFromManager:
@@ -139,8 +142,8 @@ class PrePaymentComplete:
 
 
 type Action = (
-            Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | SendInfoToManager | GetInfoFromManager | CreateContract |
-            AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete)
+        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady | GetInfoFromManager | CreateContract |
+        AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete)
 
 
 def transform(self):
@@ -158,8 +161,10 @@ def transform(self):
             return state.User(self.user_id,
                               user.Order(order_id, order.Stage(
                                   stageQuest.Materials(materials.UploadFilesMarkSaved(file_id, material)))))
-        case SendInfoToManager(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.SendInfoToManager())))
+        case UploadFilesReady(order_id=order_id, materials_set=materials_set):
+            return state.User(self.user_id,
+                              user.Order(order_id,
+                                         order.Stage(stageQuest.Materials(materials.UploadFilesReady(materials_set)))))
         case GetInfoFromManager(order_id=order_id, price=price):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageMatter.GetInfoFromManager(price))))
         case CreateContract(order_id=order_id, price=price):

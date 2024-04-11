@@ -24,9 +24,9 @@ def reduce(self, action: Action):
         case stage.Quest(base=base, body=body):
             match body:
                 case stageQuest.Quest(materials=materials):
-                    materials_set = materials.get_set()
                     match action.action:
-                        case stageMatter.SendInfoToManager():  # move to the next stage if command from the next stage are called
+                        case stageMatter.GetInfoFromManager():  # move to the next stage if command from the next stage are called
+                            materials_set = materials.get_set()
                             self.stage = stage.Matter(base, stage.QuestReified(materials_set), stageMatter.Matter())
         case stage.Matter(base=base, quest=quest, body=body):
             match action.action:

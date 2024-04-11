@@ -60,7 +60,8 @@ class PrePaymentComplete:
     pass
 
 
-type Action = CreateContract | AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete
+type Action = (CreateContract | AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment |
+               PrePaymentComplete)
 
 
 def reduce(self, action: Action):

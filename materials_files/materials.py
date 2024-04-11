@@ -25,7 +25,10 @@ class UploadFilesMarkSaved:
 
 
 class UploadFilesReady:
-    pass
+    materials_set: []
+
+    def __init__(self, materials_set: []):
+        self.materials_set = materials_set
 
 
 type Action = Change | UploadFilesMarkSaved | UploadFilesReady
@@ -123,8 +126,8 @@ def reduce(self, action: Action):
                     return [
                         effect.Nothing()
                     ]
-        case UploadFilesReady():
-            for el in self.materials_set:
+        case UploadFilesReady(materials_set=materials_set):
+            for el in materials_set:
                 match el:
                     case MaterialPhotos():
                         if len(self.files['photos']) == 0:
@@ -147,16 +150,23 @@ def reduce(self, action: Action):
                                     "Вы не загрузили файлы фотографий материалов. Загрузите их, чтобы продолжить."
                                 )
                             ]
+            self.files_ready = True
+            return [
+                effect.Message(
+                    "Отлично! Ваш заказ принят на расчёт стоимости. Мы свяжемся с вами в течении одного рабочего дня.")
+            ]
 
 
 @dataclass
 class Materials:
     photos: Photos
     files: dict
+    files_ready: bool
 
     def __init__(self, photos: Photos):
         self.photos = photos
         self.files = {'photos': [], 'drawings': [], 'closeups': []}
+        self.files_ready = False
 
     reduce = reduce
     view = view

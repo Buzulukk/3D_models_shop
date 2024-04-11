@@ -1,10 +1,6 @@
 import effect
 
 
-class SendInfoToManager:
-    pass
-
-
 class GetInfoFromManager:
     price: int
 
@@ -12,16 +8,11 @@ class GetInfoFromManager:
         self.price = price
 
 
-type Action = SendInfoToManager | GetInfoFromManager
+type Action = GetInfoFromManager
 
 
 def reduce(self, action: Action):
     match action:
-        case SendInfoToManager():
-            return [
-                effect.Message(
-                    "Отлично! Ваш заказ принят на расчёт стоимости. Мы свяжемся с вами в течении одного рабочего дня.")
-            ]
         case GetInfoFromManager(price=price):
             self.price = price
             return [

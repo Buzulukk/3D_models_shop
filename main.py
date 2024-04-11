@@ -83,17 +83,20 @@ if __name__ == '__main__':
 
         command_files_saved = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, active_material,
                                                                                          uuid.uuid4()))
+        deal_with_effects(main_state.reduce(command_files_saved.transform()))
 
-    command4 = command.Command(some_user_id, command.SendInfoToManager(some_order_id))
-    command5 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, some_price))
-    command6 = command.Command(some_user_id, command.CreateContract(some_order_id, some_price))
-    command7 = command.Command(some_user_id,
+    command_files_ready = command.Command(some_user_id, command.UploadFilesReady(some_order_id, materials_set))
+    deal_with_effects(main_state.reduce(command_files_ready.transform()))
+
+    command4 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, some_price))
+    command5 = command.Command(some_user_id, command.CreateContract(some_order_id, some_price))
+    command6 = command.Command(some_user_id,
                                command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
-    command8 = command.Command(some_user_id, command.SendContract(some_order_id))
-    command9 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
-    command10 = command.Command(some_user_id, command.PrePayment(some_order_id, some_price))
-    command11 = command.Command(some_user_id, command.PrePaymentComplete(some_order_id))
-    commands = [command4, command5, command6, command7, command8, command9, command10, command11]
+    command7 = command.Command(some_user_id, command.SendContract(some_order_id))
+    command8 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
+    command9 = command.Command(some_user_id, command.PrePayment(some_order_id, some_price))
+    command10 = command.Command(some_user_id, command.PrePaymentComplete(some_order_id))
+    commands = [command4, command5, command6, command7, command8, command9, command10]
     for run_command in commands:
         deal_with_effects(main_state.reduce(run_command.transform()))
 
