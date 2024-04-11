@@ -1,7 +1,10 @@
 import uuid
 from dataclasses import dataclass
+from typing import Any
+
 import user
 import effect
+from materials_files.materials import Materials
 
 
 class CreateUser:
@@ -39,6 +42,10 @@ def view(self, user_id: uuid.UUID, order_id: uuid.UUID):
     return self.users[user_id].view(order_id)
 
 
+def view_files(self, user_id: uuid.UUID, order_id: uuid.UUID, material: Materials, materials_set: Any):
+    return self.users[user_id].view_files(order_id, material, materials_set)
+
+
 def get_set(self, user_id: uuid.UUID, order_id: uuid.UUID):
     return self.users[user_id].get_set(order_id)
 
@@ -52,4 +59,5 @@ class State:
 
     reduce = reduce
     view = view
+    view_files = view_files
     get_set = get_set

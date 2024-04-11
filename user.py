@@ -1,7 +1,10 @@
 import uuid
 from dataclasses import dataclass
+from typing import Any
+
 import order
 import effect
+from materials_files.materials import Materials
 
 
 class CreateOrder:
@@ -50,6 +53,10 @@ def view(self, order_id: uuid.UUID):
     return self.orders[order_id].view()
 
 
+def view_files(self, order_id: uuid.UUID, material: Materials, materials_set: Any):
+    return self.orders[order_id].view_files(material, materials_set)
+
+
 def get_set(self, order_id: uuid.UUID):
     return self.orders[order_id].get_set()
 
@@ -65,4 +72,5 @@ class User:
 
     reduce = reduce
     view = view
+    view_files = view_files
     get_set = get_set

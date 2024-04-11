@@ -15,15 +15,6 @@ class Change:
         self.response = response
 
 
-class UploadFilesAsk:
-    material: Material
-    materials_set: []
-
-    def __init__(self, material: Material, materials_set: []):
-        self.material = material
-        self.materials_set = materials_set
-
-
 class UploadFilesMarkSaved:
     file_id: uuid.UUID
     material: Material
@@ -37,11 +28,60 @@ class UploadFilesReady:
     pass
 
 
-type Action = Change | UploadFilesAsk | UploadFilesMarkSaved | UploadFilesReady
+type Action = Change | UploadFilesMarkSaved | UploadFilesReady
 
 
 def view(self):
     return self.photos.view({'get_set_func': self.get_set})
+
+
+def view_files(self, material: Material, materials_set: Any):
+    match material:
+        case MaterialPhotos():
+            buttons = []
+            for el in materials_set:
+                match el:
+                    case MaterialDrawings():
+                        buttons.append("Загрузить файлы чертежей")
+                    case MaterialCloseups():
+                        buttons.append("Загрузить фотографии материалов")
+            buttons.append("Готово")
+            return [
+                effect.MessageWithButtons(
+                    "Пожалуйста, загрузите файлы фотографий и/или рендеров вашего товара",
+                    buttons
+                )
+            ]
+        case MaterialDrawings():
+            buttons = []
+            for el in materials_set:
+                match el:
+                    case MaterialPhotos():
+                        buttons.append("Загрузить фотографии товара")
+                    case MaterialCloseups():
+                        buttons.append("Загрузить фотографии материалов")
+            buttons.append("Готово")
+            return [
+                effect.MessageWithButtons(
+                    "Пожалуйста, загрузите файлы чертежей вашего товара",
+                    buttons
+                )
+            ]
+        case MaterialCloseups():
+            buttons = []
+            for el in materials_set:
+                match el:
+                    case MaterialPhotos():
+                        buttons.append("Загрузить фотографии товара")
+                    case MaterialDrawings():
+                        buttons.append("Загрузить файлы чертежей")
+            buttons.append("Готово")
+            return [
+                effect.MessageWithButtons(
+                    "Пожалуйста, загрузите файлы фотографий материалов вашего товара",
+                    buttons
+                )
+            ]
 
 
 def action(self, response):
@@ -66,53 +106,6 @@ def reduce(self, action: Action):
     match action:
         case Change(response=response):
             return self.action(response)
-        case UploadFilesAsk(material=material, materials_set=materials_set):
-            match material:
-                case MaterialPhotos():
-                    buttons = []
-                    for el in materials_set:
-                        match el:
-                            case MaterialDrawings():
-                                buttons.append("Загрузить файлы чертежей")
-                            case MaterialCloseups():
-                                buttons.append("Загрузить фотографии материалов")
-                    buttons.append("Готово")
-                    return [
-                        effect.MessageWithButtons(
-                            "Пожалуйста, загрузите файлы фотографий и/или рендеров вашего товара",
-                            buttons
-                        )
-                    ]
-                case MaterialDrawings():
-                    buttons = []
-                    for el in materials_set:
-                        match el:
-                            case MaterialPhotos():
-                                buttons.append("Загрузить фотографии товара")
-                            case MaterialCloseups():
-                                buttons.append("Загрузить фотографии материалов")
-                    buttons.append("Готово")
-                    return [
-                        effect.MessageWithButtons(
-                            "Пожалуйста, загрузите файлы чертежей вашего товара",
-                            buttons
-                        )
-                    ]
-                case MaterialCloseups():
-                    buttons = []
-                    for el in materials_set:
-                        match el:
-                            case MaterialPhotos():
-                                buttons.append("Загрузить фотографии товара")
-                            case MaterialDrawings():
-                                buttons.append("Загрузить файлы чертежей")
-                    buttons.append("Готово")
-                    return [
-                        effect.MessageWithButtons(
-                            "Пожалуйста, загрузите файлы фотографий материалов вашего товара",
-                            buttons
-                        )
-                    ]
         case UploadFilesMarkSaved(file_id=file_id, material=material):
             match material:
                 case MaterialPhotos():
@@ -167,5 +160,6 @@ class Materials:
 
     reduce = reduce
     view = view
+    view_files = view_files
     action = action
     get_set = get_set

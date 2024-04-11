@@ -1,3 +1,6 @@
+from typing import Any
+
+from materials_files.materials import Materials
 from stages import stageBase, stageQuest, stageMatter, stageContract
 
 
@@ -33,6 +36,10 @@ def view(self):
     return self.body.view()
 
 
+def view_files(self, material: Materials, materials_set: Any):
+    return self.body.view_files(material, materials_set)
+
+
 def get_set(self):
     return self.body.get_set()
 
@@ -56,6 +63,7 @@ class Quest:
 
     reduce = reduce
     view = view
+    view_files = view_files
     get_set = get_set
 
 

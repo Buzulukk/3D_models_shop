@@ -1,3 +1,5 @@
+from typing import Any
+
 from materials_files import materials, photos
 
 
@@ -21,6 +23,10 @@ def view(self):
     return self.materials.view()
 
 
+def view_files(self, material: Materials, materials_set: Any):
+    return self.materials.view_files(material, materials_set)
+
+
 def get_set(self):
     return self.materials.get_set()
 
@@ -33,4 +39,5 @@ class Quest:
 
     reduce = reduce
     view = view
+    view_files = view_files
     get_set = get_set

@@ -1,6 +1,8 @@
 import uuid
 from dataclasses import dataclass
+from typing import Any
 
+from materials_files.materials import Materials
 from stages import stage, stageBase, stageQuest, stageMatter, stageContract
 
 
@@ -46,6 +48,10 @@ def view(self):
     return self.stage.view()
 
 
+def view_files(self, material: Materials, materials_set: Any):
+    return self.stage.view_files(material, materials_set)
+
+
 def get_set(self):
     return self.stage.get_set()
 
@@ -61,4 +67,5 @@ class Order:
 
     reduce = reduce
     view = view
+    view_files = view_files
     get_set = get_set

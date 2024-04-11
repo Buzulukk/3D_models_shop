@@ -79,9 +79,7 @@ if __name__ == '__main__':
 
     materials_set = main_state.get_set(some_user_id, some_order_id)
     for active_material in materials_set:
-        command_files = command.Command(some_user_id,
-                                        command.UploadFilesAsk(some_order_id, active_material, materials_set))
-        deal_with_effects(main_state.reduce(command_files.transform()))
+        deal_with_effects(main_state.view_files(some_user_id, some_order_id, active_material, materials_set))
 
         command_files_saved = command.Command(some_user_id, command.UploadFilesMarkSaved(some_order_id, active_material,
                                                                                          uuid.uuid4()))
