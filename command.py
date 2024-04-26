@@ -124,7 +124,7 @@ class SendContractToManager:
         self.order_id = order_id
 
 
-class PrePayment:
+class CreatePrePayment:
     order_id: uuid.UUID
     price: int
 
@@ -142,7 +142,7 @@ class PrePaymentComplete:
 
 type Action = (
         Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady | GetInfoFromManager | CreateContract |
-        AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment | PrePaymentComplete)
+        AsIndividual | AsCompany | SendContract | SendContractToManager | CreatePrePayment | PrePaymentComplete)
 
 
 def transform(self):
@@ -179,8 +179,8 @@ def transform(self):
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
-        case PrePayment(order_id=order_id, price=price):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.PrePayment(price))))
+        case CreatePrePayment(order_id=order_id, price=price):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.CreatePrePayment(price))))
         case PrePaymentComplete(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.PrePaymentComplete())))
 

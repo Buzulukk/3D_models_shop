@@ -41,13 +41,11 @@ class AsCompany:
         self.taxpayer_number = taxpayer_number
 
 
-
-
 class SendContractToManager:
     pass
 
 
-class PrePayment:
+class CreatePrePayment:
     price: int
 
     def __init__(self, price: int):
@@ -58,7 +56,7 @@ class PrePaymentComplete:
     pass
 
 
-type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | PrePayment |
+type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | CreatePrePayment |
                PrePaymentComplete)
 
 
@@ -91,11 +89,10 @@ def reduce(self, action: Action):
                 effect.Message(
                     "Отлично. Договор отправлен для проверки менеджеру. Это займёт не больше часа в рабочее время, после чего мы тут-же с вами свяжемся.")
             ]
-        case PrePayment(price=price):
+        case CreatePrePayment(price=price):
             self.payment = payment.Payment(False, {"price": price})
-            self.payment.pay()
             return [
-                effect.Nothing()
+                effect.Payment(self.payment)
             ]
         case PrePaymentComplete():
             self.payment.is_payment_done = True

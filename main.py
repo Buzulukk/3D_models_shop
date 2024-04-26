@@ -28,6 +28,9 @@ def deal_with_effects(effects: []):
                     case contract.CompanyContract(full_name=full_name, position=position,
                                                   taxpayer_number=taxpayer_number):
                         print(full_name, '•', position, '•', taxpayer_number)
+            case effect.Payment(payment=payment):
+                print("Пожалуйста, оплатите половину стоимости:")
+                print(payment)
 
 
 if __name__ == '__main__':
@@ -93,7 +96,7 @@ if __name__ == '__main__':
     command6 = command.Command(some_user_id,
                                command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
     command7 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
-    command8 = command.Command(some_user_id, command.PrePayment(some_order_id, some_price))
+    command8 = command.Command(some_user_id, command.CreatePrePayment(some_order_id, some_price))
     command9 = command.Command(some_user_id, command.PrePaymentComplete(some_order_id))
     commands = [command4, command5, command6, command7, command8, command9]
     for run_command in commands:

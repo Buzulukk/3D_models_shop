@@ -1,4 +1,5 @@
 from typing import Any
+import payment
 
 
 class Nothing:
@@ -36,4 +37,11 @@ class Contract:
         self.contract = contract
 
 
-type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | Contract
+class Payment:
+    payment: payment.Payment
+
+    def __init__(self, payment: payment.Payment):
+        self.payment = payment
+
+
+type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | Contract | Payment
