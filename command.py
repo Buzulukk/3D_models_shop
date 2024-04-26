@@ -60,7 +60,6 @@ class UploadFilesReady:
         self.materials_set = materials_set
 
 
-
 class GetInfoFromManager:
     order_id: uuid.UUID
     price: int
@@ -178,8 +177,6 @@ def transform(self):
         case AsCompany(order_id=order_id, full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             return state.User(self.user_id, user.Order(order_id, order.Stage(
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
-        case SendContract(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContract())))
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
         case PrePayment(order_id=order_id, price=price):

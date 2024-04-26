@@ -41,8 +41,6 @@ class AsCompany:
         self.taxpayer_number = taxpayer_number
 
 
-class SendContract:
-    pass
 
 
 class SendContractToManager:
@@ -60,7 +58,7 @@ class PrePaymentComplete:
     pass
 
 
-type Action = (CreateContract | AsIndividual | AsCompany | SendContract | SendContractToManager | PrePayment |
+type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | PrePayment |
                PrePaymentComplete)
 
 
@@ -79,14 +77,11 @@ def reduce(self, action: Action):
             self.contract = IndividualContract(full_name, birthday, passport_number, issued_by, issued_by_number,
                                                address)
             return [
-                effect.Nothing()
+                effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
+                effect.Contract(self.contract)
             ]
         case AsCompany(full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             self.contract = CompanyContract(full_name, position, taxpayer_number)
-            return [
-                effect.Nothing()
-            ]
-        case SendContract():
             return [
                 effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
                 effect.Contract(self.contract)
