@@ -56,6 +56,10 @@ def get_set(self):
     return self.stage.get_set()
 
 
+def ask_info_for_contract(self):
+    return self.stage.ask_info_for_contract()
+
+
 @dataclass
 class Order:
     order_id: uuid.UUID
@@ -69,3 +73,4 @@ class Order:
     view = view
     view_files = view_files
     get_set = get_set
+    ask_info_for_contract = ask_info_for_contract

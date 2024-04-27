@@ -1,7 +1,8 @@
+import contractInfo
 import effect
 import payment
 
-from contract import *
+from contractInfo import *
 from payment import Payment
 
 
@@ -56,8 +57,15 @@ class PrePaymentComplete:
     pass
 
 
+class ContractInfo:
+    action: contractInfo.Action
+
+    def __init__(self, action: contractInfo.Action):
+        self.action = action
+
+
 type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | CreatePrePayment |
-               PrePaymentComplete)
+               PrePaymentComplete | ContractInfo)
 
 
 def reduce(self, action: Action):
@@ -75,14 +83,12 @@ def reduce(self, action: Action):
             self.contract = IndividualContract(full_name, birthday, passport_number, issued_by, issued_by_number,
                                                address)
             return [
-                effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
-                effect.Contract(self.contract)
+                effect.Message("Вам необходимо указать некоторые данные для составления контракта"),
             ]
         case AsCompany(full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             self.contract = CompanyContract(full_name, position, taxpayer_number)
             return [
-                effect.Message("Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте."),
-                effect.Contract(self.contract)
+                effect.Message("Вам необходимо указать некоторые данные для составления контракта"),
             ]
         case SendContractToManager():
             return [
@@ -100,14 +106,21 @@ def reduce(self, action: Action):
                 effect.Message(
                     "Мы получили вашу предоплату и ваш заказ взят в работу. Как только всё будет готово, мы тут же вас оповестим! Помните, что по всем вопросам вы можете обращаться в нашу службу заботы о клиентах.")
             ]
+        case ContractInfo(action=action):
+            return self.contract.reduce(action)
+
+
+def ask_info_for_contract(self):
+    return self.contract.ask_info_for_contract()
 
 
 class Contract:
-    contract: Contract
+    contract: ContractInfo
     payment: Payment
 
-    def __init__(self, contract: Contract, payment: Payment):
+    def __init__(self, contract: ContractInfo, payment: Payment):
         self.contract = contract
         self.payment = payment
 
     reduce = reduce
+    ask_info_for_contract = ask_info_for_contract

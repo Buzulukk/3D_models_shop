@@ -50,6 +50,10 @@ def get_set(self, user_id: uuid.UUID, order_id: uuid.UUID):
     return self.users[user_id].get_set(order_id)
 
 
+def ask_info_for_contract(self, user_id: uuid.UUID, order_id: uuid.UUID):
+    return self.users[user_id].ask_info_for_contract(order_id)
+
+
 @dataclass
 class State:
     users: {uuid.UUID, user.User}
@@ -61,3 +65,4 @@ class State:
     view = view
     view_files = view_files
     get_set = get_set
+    ask_info_for_contract = ask_info_for_contract

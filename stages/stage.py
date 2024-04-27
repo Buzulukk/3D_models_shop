@@ -44,6 +44,10 @@ def get_set(self):
     return self.body.get_set()
 
 
+def ask_info_for_contract(self):
+    return self.body.ask_info_for_contract()
+
+
 class Base:
     body: stageBase.Base
 
@@ -84,15 +88,16 @@ class Contract:
     base: BaseReified
     quest: QuestReified
     matter: MatterReified
-    body: stageContract.Contract
+    body: stageContract.ContractInfo
 
-    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, body: stageContract.Contract):
+    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, body: stageContract.ContractInfo):
         self.base = base
         self.quest = quest
         self.matter = matter
         self.body = body
 
     reduce = reduce
+    ask_info_for_contract = ask_info_for_contract
 
 
 type Stage = Base | Quest | Matter | Contract

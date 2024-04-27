@@ -3,6 +3,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
+import contractInfo
 from materials_files import materials
 from materials_files.material import Material
 import order
@@ -110,6 +111,15 @@ class AsCompany:
         self.taxpayer_number = taxpayer_number
 
 
+class AddInfoForContract:
+    order_id: uuid.UUID
+    data: Any
+
+    def __init__(self, order_id: uuid.UUID, data: Any):
+        self.order_id = order_id
+        self.data = data
+
+
 class SendContract:
     order_id: uuid.UUID
 
@@ -141,8 +151,9 @@ class PrePaymentComplete:
 
 
 type Action = (
-        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady | GetInfoFromManager | CreateContract |
-        AsIndividual | AsCompany | SendContract | SendContractToManager | CreatePrePayment | PrePaymentComplete)
+        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady |
+        GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract | SendContract | SendContractToManager |
+        CreatePrePayment | PrePaymentComplete)
 
 
 def transform(self):
@@ -177,6 +188,9 @@ def transform(self):
         case AsCompany(order_id=order_id, full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             return state.User(self.user_id, user.Order(order_id, order.Stage(
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
+        case AddInfoForContract(order_id=order_id, data=data):
+            return state.User(self.user_id,
+                              user.Order(order_id, order.Stage(stageContract.ContractInfo(contractInfo.Change(data)))))
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
         case CreatePrePayment(order_id=order_id, price=price):

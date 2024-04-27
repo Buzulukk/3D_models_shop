@@ -61,6 +61,10 @@ def get_set(self, order_id: uuid.UUID):
     return self.orders[order_id].get_set()
 
 
+def ask_info_for_contract(self, order_id: uuid.UUID):
+    return self.orders[order_id].ask_info_for_contract()
+
+
 @dataclass
 class User:
     user_id: uuid.UUID
@@ -74,3 +78,4 @@ class User:
     view = view
     view_files = view_files
     get_set = get_set
+    ask_info_for_contract = ask_info_for_contract

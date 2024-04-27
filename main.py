@@ -5,7 +5,7 @@ from materials_files import material, photos, drawings, closeups, drawingsWithCl
     skipToApproval
 import state
 import effect
-import contract
+import contractInfo
 
 
 def deal_with_effects(effects: []):
@@ -20,13 +20,13 @@ def deal_with_effects(effects: []):
                 print(buttons)
             case effect.Contract(contract=some_contract):
                 match some_contract:
-                    case contract.IndividualContract(full_name=full_name, birthday=birthday,
-                                                     passport_number=passport_number, issued_by=issued_by,
-                                                     issued_by_number=issued_by_number, address=address):
+                    case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,
+                                                         passport_number=passport_number, issued_by=issued_by,
+                                                         issued_by_number=issued_by_number, address=address):
                         print(full_name, '•', birthday, '•', passport_number, '•', issued_by, '•', issued_by_number,
                               '•', address)
-                    case contract.CompanyContract(full_name=full_name, position=position,
-                                                  taxpayer_number=taxpayer_number):
+                    case contractInfo.CompanyContract(full_name=full_name, position=position,
+                                                      taxpayer_number=taxpayer_number):
                         print(full_name, '•', position, '•', taxpayer_number)
             case effect.Payment(payment=payment):
                 print("Пожалуйста, оплатите половину стоимости:")
@@ -94,11 +94,34 @@ if __name__ == '__main__':
     command4 = command.Command(some_user_id, command.GetInfoFromManager(some_order_id, some_price))
     command5 = command.Command(some_user_id, command.CreateContract(some_order_id, some_price))
     command6 = command.Command(some_user_id,
-                               command.AsCompany(some_order_id, some_full_name, some_position, some_taxpayer_number))
+                               command.AsCompany(some_order_id, None, None, None))
+    commands = [command4, command5, command6]
+    for run_command in commands:
+        deal_with_effects(main_state.reduce(run_command.transform()))
+
+    info_answer_1 = command.Command(some_user_id, command.AddInfoForContract(some_order_id, some_full_name))
+    info_answer_2 = command.Command(some_user_id, command.AddInfoForContract(some_order_id, some_position))
+    info_answer_3 = command.Command(some_user_id, command.AddInfoForContract(some_order_id, some_taxpayer_number))
+    info_answers = [info_answer_1, info_answer_2, info_answer_3]
+    info_answers_it = 0
+    while True:
+        info_ask = main_state.ask_info_for_contract(some_user_id, some_order_id)
+
+        deal_with_effects(info_ask)
+
+        match info_ask[0]:
+            case effect.Message(message=message):
+                if message == "Это договор на наши услуги. Чтобы продолжить, подпишите его и отправьте.":
+                    break
+
+        print(info_answers[info_answers_it].action.data)
+        main_state.reduce(info_answers[info_answers_it].transform())
+        info_answers_it += 1
+
     command7 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
     command8 = command.Command(some_user_id, command.CreatePrePayment(some_order_id, some_price))
     command9 = command.Command(some_user_id, command.PrePaymentComplete(some_order_id))
-    commands = [command4, command5, command6, command7, command8, command9]
+    commands = [command7, command8, command9]
     for run_command in commands:
         deal_with_effects(main_state.reduce(run_command.transform()))
 
