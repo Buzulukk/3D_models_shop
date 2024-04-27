@@ -36,7 +36,7 @@ def reduce(self, action: Action):
         case stage.Contract(base=base, quest=quest, matter=matter, body=body):
             match action.action:
                 case stageFinal.CreatePrePayment(price=price):
-                    self.stage = stage.Final(base, quest, matter, stage.ContractReified(body), stageFinal.Final(None))
+                    self.stage = stage.Final(base, quest, matter, stage.ContractReified(body), stageFinal.Final(None, None))
 
     match action:
         case Stage(action=action):

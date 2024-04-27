@@ -22,6 +22,17 @@ class MessageWithButtons:
         self.buttons = buttons
 
 
+class MessageWithLinksAndButtons:
+    message: str
+    links: dict
+    buttons: [str]
+
+    def __init__(self, message: str, links: dict, buttons: [str]):
+        self.message = message
+        self.links = links
+        self.buttons = buttons
+
+
 class StopQuestionnaire:
     pass
 
@@ -44,4 +55,12 @@ class Payment:
         self.payment = payment
 
 
-type Effect = Nothing | Message | MessageWithButtons | StopQuestionnaire | RepeatQuestionnaire | Contract | Payment
+class File:
+    file: str
+
+    def __init__(self, file: str):
+        self.file = file
+
+
+type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | StopQuestionnaire |
+               RepeatQuestionnaire | Contract | Payment | File)

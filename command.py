@@ -150,10 +150,35 @@ class PrePaymentComplete:
         self.order_id = order_id
 
 
+class OrderReady:
+    order_id: uuid.UUID
+    file: str
+
+    def __init__(self, order_id: uuid.UUID, file: str):
+        self.order_id = order_id
+        self.file = file
+
+
+class CreateFinalPayment:
+    order_id: uuid.UUID
+    price: int
+
+    def __init__(self, order_id: uuid.UUID, price: int):
+        self.order_id = order_id
+        self.price = price
+
+
+class FinalPaymentComplete:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 type Action = (
         Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady |
         GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract | SendContract | SendContractToManager |
-        CreatePrePayment | PrePaymentComplete)
+        CreatePrePayment | PrePaymentComplete | OrderReady | CreateFinalPayment | FinalPaymentComplete)
 
 
 def transform(self):
@@ -197,6 +222,12 @@ def transform(self):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.CreatePrePayment(price))))
         case PrePaymentComplete(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.PrePaymentComplete())))
+        case OrderReady(order_id=order_id, file=file):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.OrderReady(file))))
+        case CreateFinalPayment(order_id=order_id, price=price):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.CreateFinalPayment(price))))
+        case FinalPaymentComplete(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.FinalPaymentComplete())))
 
 
 @dataclass

@@ -18,6 +18,9 @@ def deal_with_effects(effects: []):
             case effect.MessageWithButtons(message=message, buttons=buttons):
                 print(message)
                 print(buttons)
+            case effect.MessageWithLinksAndButtons(message=message, links=links, buttons=buttons):
+                print(message)
+                print(buttons)
             case effect.Contract(contract=some_contract):
                 match some_contract:
                     case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,
@@ -29,8 +32,10 @@ def deal_with_effects(effects: []):
                                                       taxpayer_number=taxpayer_number):
                         print(full_name, '•', position, '•', taxpayer_number)
             case effect.Payment(payment=payment):
-                print("Пожалуйста, оплатите половину стоимости:")
-                print(payment)
+                print("Пожалуйста, оплатите:")
+                print(payment, payment.info["price"])
+            case effect.File(file=file):
+                print(file)
 
 
 if __name__ == '__main__':
@@ -43,6 +48,7 @@ if __name__ == '__main__':
     some_full_name = "Ryan Thomas Gosling"
     some_position = "Hollywood actor"
     some_taxpayer_number = "0123456789"
+    some_file = "some_file.txt"
 
     command1 = command.Command(some_user_id, command.Start())
     command2 = command.Command(some_user_id, command.CreateOrder(some_order_id))
@@ -121,10 +127,13 @@ if __name__ == '__main__':
     command7 = command.Command(some_user_id, command.SendContractToManager(some_order_id))
     command8 = command.Command(some_user_id, command.CreatePrePayment(some_order_id, some_price))
     command9 = command.Command(some_user_id, command.PrePaymentComplete(some_order_id))
-    commands = [command7, command8, command9]
+    command10 = command.Command(some_user_id, command.OrderReady(some_order_id, some_file))
+    command11 = command.Command(some_user_id, command.CreateFinalPayment(some_order_id, some_price))
+    command12 = command.Command(some_user_id, command.FinalPaymentComplete(some_order_id))
+    commands = [command7, command8, command9, command10, command11, command12]
     for run_command in commands:
         deal_with_effects(main_state.reduce(run_command.transform()))
 
-    print()
+    print("----------------------")
     print(main_state)
     print("truly end")
