@@ -46,17 +46,6 @@ class SendContractToManager:
     pass
 
 
-class CreatePrePayment:
-    price: int
-
-    def __init__(self, price: int):
-        self.price = price
-
-
-class PrePaymentComplete:
-    pass
-
-
 class ContractInfo:
     action: contractInfo.Action
 
@@ -64,8 +53,7 @@ class ContractInfo:
         self.action = action
 
 
-type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | CreatePrePayment |
-               PrePaymentComplete | ContractInfo)
+type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | ContractInfo)
 
 
 def reduce(self, action: Action):
@@ -95,17 +83,6 @@ def reduce(self, action: Action):
                 effect.Message(
                     "Отлично. Договор отправлен для проверки менеджеру. Это займёт не больше часа в рабочее время, после чего мы тут-же с вами свяжемся.")
             ]
-        case CreatePrePayment(price=price):
-            self.payment = payment.Payment(False, {"price": price})
-            return [
-                effect.Payment(self.payment)
-            ]
-        case PrePaymentComplete():
-            self.payment.is_payment_done = True
-            return [
-                effect.Message(
-                    "Мы получили вашу предоплату и ваш заказ взят в работу. Как только всё будет готово, мы тут же вас оповестим! Помните, что по всем вопросам вы можете обращаться в нашу службу заботы о клиентах.")
-            ]
         case ContractInfo(action=action):
             return self.contract.reduce(action)
 
@@ -116,11 +93,9 @@ def ask_info_for_contract(self):
 
 class Contract:
     contract: ContractInfo
-    payment: Payment
 
-    def __init__(self, contract: ContractInfo, payment: Payment):
+    def __init__(self, contract: ContractInfo):
         self.contract = contract
-        self.payment = payment
 
     reduce = reduce
     ask_info_for_contract = ask_info_for_contract

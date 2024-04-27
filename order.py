@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from materials_files.materials import Materials
-from stages import stage, stageBase, stageQuest, stageMatter, stageContract
+from stages import stage, stageBase, stageQuest, stageMatter, stageContract, stageFinal
 
 
 class Stage:
@@ -31,8 +31,12 @@ def reduce(self, action: Action):
         case stage.Matter(base=base, quest=quest, body=body):
             match action.action:
                 case stageContract.CreateContract(price=price):
-                    self.stage = stage.Contract(base, quest, stage.MatterReified(price),
-                                                stageContract.Contract(None, None))
+                    self.stage = stage.Contract(base, quest, stage.MatterReified(body),
+                                                stageContract.Contract(None))
+        case stage.Contract(base=base, quest=quest, matter=matter, body=body):
+            match action.action:
+                case stageFinal.CreatePrePayment(price=price):
+                    self.stage = stage.Final(base, quest, matter, stage.ContractReified(body), stageFinal.Final(None))
 
     match action:
         case Stage(action=action):

@@ -9,7 +9,7 @@ from materials_files.material import Material
 import order
 import state
 import user
-from stages import stageBase, stageQuest, stageMatter, stageContract
+from stages import stageBase, stageQuest, stageMatter, stageContract, stageFinal
 
 
 class Start:
@@ -194,9 +194,9 @@ def transform(self):
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
         case CreatePrePayment(order_id=order_id, price=price):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.CreatePrePayment(price))))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.CreatePrePayment(price))))
         case PrePaymentComplete(order_id=order_id):
-            return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.PrePaymentComplete())))
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageFinal.PrePaymentComplete())))
 
 
 @dataclass

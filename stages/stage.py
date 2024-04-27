@@ -1,7 +1,8 @@
 from typing import Any
 
 from materials_files.materials import Materials
-from stages import stageBase, stageQuest, stageMatter, stageContract
+from stages import stageBase, stageQuest, stageMatter, stageContract, stageFinal
+from contractInfo import ContractInfo
 
 
 class BaseReified:
@@ -25,7 +26,14 @@ class MatterReified:
         self.price = price
 
 
-type Action = stageBase.Action | stageQuest.Action | stageMatter.Action | stageContract.Action
+class ContractReified:
+    contract: stageContract.Contract
+
+    def __init__(self, contract: stageContract.Contract):
+        self.contract = contract
+
+
+type Action = stageBase.Action | stageQuest.Action | stageMatter.Action | stageContract.Action | stageFinal.Action
 
 
 def reduce(self, action: Action):
@@ -88,9 +96,9 @@ class Contract:
     base: BaseReified
     quest: QuestReified
     matter: MatterReified
-    body: stageContract.ContractInfo
+    body: stageContract.Contract
 
-    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, body: stageContract.ContractInfo):
+    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, body: stageContract.Contract):
         self.base = base
         self.quest = quest
         self.matter = matter
@@ -100,4 +108,22 @@ class Contract:
     ask_info_for_contract = ask_info_for_contract
 
 
-type Stage = Base | Quest | Matter | Contract
+class Final:
+    base: BaseReified
+    quest: QuestReified
+    matter: MatterReified
+    contract: ContractReified
+    body: stageFinal.Final
+
+    def __init__(self, base: BaseReified, quest: QuestReified, matter: MatterReified, contract: ContractReified,
+                 body: stageFinal.Final):
+        self.base = base
+        self.quest = quest
+        self.matter = matter
+        self.contract = contract
+        self.body = body
+
+    reduce = reduce
+
+
+type Stage = Base | Quest | Matter | Contract | Final
