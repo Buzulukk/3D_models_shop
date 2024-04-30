@@ -1,3 +1,4 @@
+import command
 import effect
 from materials_files.approval import *
 from materials_files.skipToApproval import *
@@ -11,6 +12,23 @@ class Response:
     class ResponseNo:
         pass
 
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case CloseupsPresent(approval=approval):
+            return self.approval.response(active_order, tg_message)
+        case CloseupsAbsent(skip=skip):
+            return self.skip.response(active_order, tg_message)
+        case CloseupsUnknown():
+            match tg_message["message"]["text"]:
+                case "Да":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Нет":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
 
 def view(self, deps):
     match self:
@@ -62,6 +80,7 @@ class CloseupsPresent:
     def __init__(self, approval: Approval):
         self.approval = approval
 
+    response = response
     view = view
     get_set = get_set
     action = action
@@ -73,12 +92,14 @@ class CloseupsAbsent:
     def __init__(self, skip: SkipToApproval):
         self.skip = skip
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class CloseupsUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

@@ -19,7 +19,7 @@ type Action = Stage
 def reduce(self, action: Action):
     match self.stage:
         case stage.Base(body=stageBase.Base(name=name)):
-            if name is not None:  # move to the next stage if name is not None
+            if name != "No name":  # move to the next stage if name is not None
                 self.stage = stage.Quest(stage.BaseReified(name), stageQuest.Quest())
         case stage.Quest(base=base, body=body):
             match body:
@@ -36,17 +36,22 @@ def reduce(self, action: Action):
         case stage.Contract(base=base, quest=quest, matter=matter, body=body):
             match action.action:
                 case stageFinal.CreatePrePayment(price=price):
-                    self.stage = stage.Final(base, quest, matter, stage.ContractReified(body), stageFinal.Final(None, None))
+                    self.stage = stage.Final(base, quest, matter, stage.ContractReified(body),
+                                             stageFinal.Final(None, None))
 
     match action:
         case Stage(action=action):
             return self.stage.reduce(action)
 
 
+def response(self, active_order, tg_message):
+    return self.stage.response(active_order, tg_message)
+
+
 def view(self):
     match self.stage:
         case stage.Base(body=stageBase.Base(name=name)):
-            if name is not None:  # move to the next stage if name is not None
+            if name != "No name":  # move to the next stage if name is not None
                 self.stage = stage.Quest(stage.BaseReified(name), stageQuest.Quest())
 
     return self.stage.view()
@@ -71,10 +76,11 @@ class Order:
 
     def __init__(self, order_id: uuid.UUID):
         self.order_id = order_id
-        self.stage = stage.Base(stageBase.Base(None))
+        self.stage = stage.Base(stageBase.Base("No name"))
 
     reduce = reduce
     view = view
     view_files = view_files
     get_set = get_set
     ask_info_for_contract = ask_info_for_contract
+    response = response

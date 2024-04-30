@@ -17,13 +17,36 @@ class Response:
         pass
 
 
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case DrawingsWithCloseupsPresent(approval=approval):
+            return self.approval.response(active_order, tg_message)
+        case DrawingsWithCloseupsAbsent():
+            match tg_message["message"]["text"]:
+                case "Чертежи и фото образцов готовы":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order,
+                                                                                SingleResponse.SingleResponseYes()))
+                case _:
+                    return None
+        case DrawingsWithCloseupsUnknown():
+            match tg_message["message"]["text"]:
+                case "Да":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Нет":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
+
+
 def view(self, deps):
     match self:
         case DrawingsWithCloseupsPresent(approval=approval):
             return approval.view(deps)
         case DrawingsWithCloseupsAbsent():
             return {
-                'message': "К сожалению, в таком случае невозможно создать качественную 30 модель. Чтобы продолжить, разработайте чертежи и сделайте качественные, отражающие фактуру фото образов материала, после чего нажмите на кнопку “Чертежи и фото образцов готовы”",
+                'message': "К сожалению, в таком случае невозможно создать качественную 3D модель. Чтобы продолжить, разработайте чертежи и сделайте качественные, отражающие фактуру фото образов материала, после чего нажмите на кнопку “Чертежи и фото образцов готовы”",
                 'buttons': ["Чертежи и фото образцов готовы"]
             }
         case DrawingsWithCloseupsUnknown():
@@ -73,18 +96,21 @@ class DrawingsWithCloseupsPresent:
     def __init__(self, approval: Approval):
         self.approval = approval
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class DrawingsWithCloseupsAbsent:
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class DrawingsWithCloseupsUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

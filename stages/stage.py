@@ -40,6 +40,10 @@ def reduce(self, action: Action):
     return self.body.reduce(action)
 
 
+def response(self, active_order, tg_message):
+    return self.body.response(active_order, tg_message)
+
+
 def view(self):
     return self.body.view()
 
@@ -63,6 +67,7 @@ class Base:
         self.body = body
 
     reduce = reduce
+    response = response
 
 
 class Quest:
@@ -74,6 +79,7 @@ class Quest:
         self.body = body
 
     reduce = reduce
+    response = response
     view = view
     view_files = view_files
     get_set = get_set
@@ -90,6 +96,7 @@ class Matter:
         self.body = body
 
     reduce = reduce
+    response = response
 
 
 class Contract:
@@ -105,6 +112,7 @@ class Contract:
         self.body = body
 
     reduce = reduce
+    response = response
     ask_info_for_contract = ask_info_for_contract
 
 
@@ -124,6 +132,7 @@ class Final:
         self.body = body
 
     reduce = reduce
+    response = response
 
 
 type Stage = Base | Quest | Matter | Contract | Final

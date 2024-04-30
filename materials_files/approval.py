@@ -1,3 +1,4 @@
+import command
 import effect
 
 from materials_files import material
@@ -9,6 +10,24 @@ class Response:
 
     class ResponseNo:
         pass
+
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case ApprovalYes():
+            return None
+        case ApprovalNo():
+            return None
+        case ApprovalUnknown():
+            match tg_message["message"]["text"]:
+                case "Верно":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Не совсем":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
 
 
 def view(self, deps):
@@ -63,18 +82,21 @@ def get_set(self, material: material.Material):
 
 
 class ApprovalYes:
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class ApprovalNo:
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class ApprovalUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

@@ -11,19 +11,20 @@ import contractInfo
 main_state = state.State()
 
 
-def effects_handler(chat_id, effects: []):
+def effects_handler(user_id, effects: []):
     for some_effect in effects:
         match some_effect:
             case effect.Nothing():
                 pass
             case effect.Message(message=message):
-                telegram_api.send_message(chat_id, message)
+                telegram_api.send_message(user_id, message)
             case effect.MessageWithButtons(message=message, buttons=buttons):
-                print(message)
-                print(buttons)
+                telegram_api.send_message_with_buttons(user_id, message, buttons)
             case effect.MessageWithLinksAndButtons(message=message, links=links, buttons=buttons):
                 print(message)
                 print(buttons)
+            case effect.View():
+                telegram_api.send_questionnaire_question(user_id, main_state.view(user_id))
             case effect.Contract(contract=some_contract):
                 match some_contract:
                     case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,
@@ -77,7 +78,7 @@ def effects_handler(chat_id, effects: []):
 #     questionnaire_answers_it = 0
 #
 #     while True:
-#         questionnaire_question = main_state.view(some_user_id, some_order_id)
+#         questionnaire_question = main_state.view(some_user_id)
 #
 #         print(questionnaire_question['message'])
 #         print(questionnaire_question.get('buttons'))

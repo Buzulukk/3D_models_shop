@@ -1,3 +1,4 @@
+import command
 import effect
 
 from materials_files.drawings import *
@@ -11,6 +12,24 @@ class Response:
 
     class ResponseNo:
         pass
+
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case PhotosPresent(drawings=drawings):
+            return self.drawings.response(active_order, tg_message)
+        case PhotosAbsent(drawings_with_closeups=drawings_with_closeups):
+            return self.drawings_with_closeups.response(active_order, tg_message)
+        case PhotosUnknown():
+            match tg_message["message"]["text"]:
+                case "Да":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Нет":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
 
 
 def view(self, deps):
@@ -63,6 +82,7 @@ class PhotosPresent:
     def __init__(self, drawings: Drawings):
         self.drawings = drawings
 
+    response = response
     view = view
     get_set = get_set
     action = action
@@ -74,12 +94,14 @@ class PhotosAbsent:
     def __init__(self, drawings_with_closeups: DrawingsWithCloseups):
         self.drawings_with_closeups = drawings_with_closeups
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class PhotosUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

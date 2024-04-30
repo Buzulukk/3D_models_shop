@@ -33,6 +33,10 @@ class MessageWithLinksAndButtons:
         self.buttons = buttons
 
 
+class View:
+    pass
+
+
 class StopQuestionnaire:
     pass
 
@@ -62,5 +66,5 @@ class File:
         self.file = file
 
 
-type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | StopQuestionnaire |
+type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | View | StopQuestionnaire |
                RepeatQuestionnaire | Contract | Payment | File)

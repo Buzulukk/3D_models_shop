@@ -1,3 +1,4 @@
+import command
 import effect
 
 
@@ -16,8 +17,18 @@ def reduce(self, action: Action):
         case SetOrderName(name=name):
             self.name = name
             return [
-                effect.Nothing()
+                effect.View()
             ]
+
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self.name:
+        case "No name":
+            return command.Command(user_id, command.SetOrderName(active_order, tg_message["message"]["text"]))
+        case _:
+            return None
 
 
 class Base:
@@ -27,3 +38,4 @@ class Base:
         self.name = name
 
     reduce = reduce
+    response = response

@@ -15,6 +15,28 @@ class Response:
     class ResponseNo:
         pass
 
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case SkipToCloseupsYes(closeups=closeups):
+            return self.closeups.response(active_order, tg_message)
+        case SkipToCloseupsNo():
+            match tg_message["message"]["text"]:
+                case "Замеры готовы":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order,
+                                                                                SingleResponse.SingleResponseYes()))
+                case _:
+                    return None
+        case SkipToCloseupsUnknown():
+            match tg_message["message"]["text"]:
+                case "Продолжить без замеров":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Я проведу замеры":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
+
 
 def view(self, deps):
     match self:
@@ -64,18 +86,21 @@ class SkipToCloseupsYes:
     def __init__(self, closeups: Closeups):
         self.closeups = closeups
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class SkipToCloseupsNo:
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class SkipToCloseupsUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

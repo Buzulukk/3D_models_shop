@@ -16,6 +16,29 @@ class Response:
         pass
 
 
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case SkipToApprovalYes(approval=approval):
+            return self.approval.response(active_order, tg_message)
+        case SkipToApprovalNo():
+            match tg_message["message"]["text"]:
+                case "Фотографии готовы":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order,
+                                                                                SingleResponse.SingleResponseYes()))
+                case _:
+                    return None
+        case SkipToApprovalUnknown():
+            match tg_message["message"]["text"]:
+                case "Да":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Нет":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
+
+
 def view(self, deps):
     match self:
         case SkipToApprovalYes(approval=approval):
@@ -64,18 +87,21 @@ class SkipToApprovalYes:
     def __init__(self, approval: Approval):
         self.approval = approval
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class SkipToApprovalNo:
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class SkipToApprovalUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action

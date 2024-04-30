@@ -14,9 +14,11 @@ type Action = Materials
 
 
 def reduce(self, action: Action):
-    match action:
-        case Materials(action=action):
-            return self.materials.reduce(action)
+    return self.materials.reduce(action.action)
+
+
+def response(self, active_order, tg_message):
+    return self.materials.response(active_order, tg_message)
 
 
 def view(self):
@@ -38,6 +40,7 @@ class Quest:
         self.materials = materials.Materials(photos.PhotosUnknown())
 
     reduce = reduce
+    response = response
     view = view
     view_files = view_files
     get_set = get_set

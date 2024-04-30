@@ -90,7 +90,7 @@ def view_files(self, material: Material, materials_set: Any):
 def action(self, response):
     self.photos = self.photos.action(response)
     return [
-        effect.Nothing()
+        effect.View()
     ]
 
 
@@ -157,6 +157,10 @@ def reduce(self, action: Action):
             ]
 
 
+def response(self, active_order, tg_message):
+    return self.photos.response(active_order, tg_message)
+
+
 @dataclass
 class Materials:
     photos: Photos
@@ -169,6 +173,7 @@ class Materials:
         self.files_ready = False
 
     reduce = reduce
+    response = response
     view = view
     view_files = view_files
     action = action

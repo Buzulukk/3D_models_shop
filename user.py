@@ -2,6 +2,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
+import command
 import order
 import effect
 from materials_files.materials import Materials
@@ -37,6 +38,7 @@ def reduce(self, action: Action):
     match action:
         case CreateOrder(order_id=order_id):
             self.orders[order_id] = order.Order(order_id)
+            self.active_order = order_id
             return [
                 effect.Message("Пожалуйста, введите название вашего товара: ")
             ]
@@ -49,8 +51,18 @@ def reduce(self, action: Action):
             return self.orders[order_id].reduce(action)
 
 
-def view(self, order_id: uuid.UUID):
-    return self.orders[order_id].view()
+def response(self, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match tg_message["message"]["text"]:
+        case "Заказать модель":
+            return command.Command(user_id, command.CreateOrder(uuid.uuid4()))
+        case _:
+            return self.orders[self.active_order].response(self.active_order, tg_message)
+
+
+def view(self):
+    return self.orders[self.active_order].view()
 
 
 def view_files(self, order_id: uuid.UUID, material: Materials, materials_set: Any):
@@ -69,13 +81,16 @@ def ask_info_for_contract(self, order_id: uuid.UUID):
 class User:
     user_id: uuid.UUID
     orders: {uuid.UUID, order.Order}
+    active_order: uuid.UUID
 
     def __init__(self, user_id: uuid.UUID):
         self.user_id = user_id
         self.orders = {}
+        self.active_order = None
 
     reduce = reduce
     view = view
     view_files = view_files
     get_set = get_set
     ask_info_for_contract = ask_info_for_contract
+    response = response

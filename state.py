@@ -2,6 +2,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
+import command
 import user
 import effect
 from materials_files.materials import Materials
@@ -31,15 +32,27 @@ def reduce(self, action: Action):
         case CreateUser(user_id=user_id):
             self.users[user_id] = user.User(user_id)
             return [
-                effect.Message(
-                    "Добрый день! Вы обратились в отдел разработки 3D моделей. Для того чтобы начать, нажмите на кнопку “Заказать модель” из меню.")
+                effect.MessageWithButtons(
+                    "Добрый день! Вы обратились в отдел разработки 3D моделей. Для того чтобы начать, нажмите на кнопку “Заказать модель” из меню.",
+                    ["Заказать модель"]
+                )
             ]
         case User(user_id=user_id, action=action):
             return self.users[user_id].reduce(action)
 
 
-def view(self, user_id: uuid.UUID, order_id: uuid.UUID):
-    return self.users[user_id].view(order_id)
+def response(self, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match tg_message["message"]["text"]:
+        case "/start":
+            return command.Command(user_id, command.Start())
+        case _:
+            return self.users[user_id].response(tg_message)
+
+
+def view(self, user_id: uuid.UUID):
+    return self.users[user_id].view()
 
 
 def view_files(self, user_id: uuid.UUID, order_id: uuid.UUID, material: Materials, materials_set: Any):
@@ -66,3 +79,4 @@ class State:
     view_files = view_files
     get_set = get_set
     ask_info_for_contract = ask_info_for_contract
+    response = response

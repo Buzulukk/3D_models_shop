@@ -1,3 +1,4 @@
+import command
 import effect
 from materials_files.closeups import *
 from materials_files.skipToCloseups import *
@@ -11,6 +12,23 @@ class Response:
     class ResponseNo:
         pass
 
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match self:
+        case DrawingsPresent(closeups=closeups):
+            return self.closeups.response(active_order, tg_message)
+        case DrawingsAbsent(skip=skip):
+            return self.skip.response(active_order, tg_message)
+        case DrawingsUnknown():
+            match tg_message["message"]["text"]:
+                case "Да":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseYes()))
+                case "Нет":
+                    return command.Command(user_id, command.QuestionnaireAnswer(active_order, Response.ResponseNo()))
+                case _:
+                    return None
 
 def view(self, deps):
     match self:
@@ -62,6 +80,7 @@ class DrawingsPresent:
     def __init__(self, closeups: Closeups):
         self.closeups = closeups
 
+    response = response
     view = view
     get_set = get_set
     action = action
@@ -73,12 +92,14 @@ class DrawingsAbsent:
     def __init__(self, skip: SkipToCloseups):
         self.skip = skip
 
+    response = response
     view = view
     get_set = get_set
     action = action
 
 
 class DrawingsUnknown:
+    response = response
     view = view
     get_set = get_set
     action = action
