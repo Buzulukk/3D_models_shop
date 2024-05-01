@@ -30,6 +30,7 @@ def response(self, active_order, tg_message):
                 case _:
                     return None
 
+
 def view(self, deps):
     match self:
         case CloseupsPresent(approval=approval):

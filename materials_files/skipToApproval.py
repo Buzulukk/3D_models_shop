@@ -1,3 +1,5 @@
+from typing import Any
+
 import effect
 from materials_files.approval import *
 from materials_files.material import *
@@ -29,6 +31,8 @@ def response(self, active_order, tg_message):
                                                                                 SingleResponse.SingleResponseYes()))
                 case _:
                     return None
+        case SkipToApprovalCloseupsPresent(approval=approval):
+            return self.approval.response(active_order, tg_message)
         case SkipToApprovalUnknown():
             match tg_message["message"]["text"]:
                 case "Да":
@@ -48,6 +52,8 @@ def view(self, deps):
                 'message': "В таком случае, сделайте несколько качественных фотографий основных материалов, из которых производится ваш товар, после чего нажмите на кнопку “Фотографии готовы”",
                 'buttons': ["Фотографии готовы"]
             }
+        case SkipToApprovalCloseupsPresent(approval=approval):
+            return approval.view(deps)
         case SkipToApprovalUnknown():
             return {
                 'message': "Считаете ли вы, что цвет и фактура материалов достаточно хорошо видны на фотографиях товара?",
@@ -62,7 +68,9 @@ def action(self, response):
         case SkipToApprovalNo():
             match response:
                 case SingleResponse.SingleResponseYes():
-                    return SkipToApprovalYes(ApprovalUnknown())
+                    return SkipToApprovalCloseupsPresent(ApprovalUnknown())
+        case SkipToApprovalCloseupsPresent(approval=approval):
+            return SkipToApprovalCloseupsPresent(approval.action(response))
         case SkipToApprovalUnknown():
             match response:
                 case Response.ResponseYes():
@@ -72,11 +80,19 @@ def action(self, response):
 
 
 def get_set(self, material: Material):
+    material_is_closeups = False
+    match material:
+        case MaterialCloseups():
+            material_is_closeups = True
+
     match self:
         case SkipToApprovalYes(approval=approval):
             return approval.get_set(material)
         case SkipToApprovalNo():
             return None
+        case SkipToApprovalCloseupsPresent(approval=approval):
+            return None if approval.get_set(material) is None \
+                else approval.get_set(material) or material_is_closeups
         case SkipToApprovalUnknown():
             return None
 
@@ -100,6 +116,18 @@ class SkipToApprovalNo:
     action = action
 
 
+class SkipToApprovalCloseupsPresent:
+    approval: Approval
+
+    def __init__(self, approval: Approval):
+        self.approval = approval
+
+    response = response
+    view = view
+    get_set = get_set
+    action = action
+
+
 class SkipToApprovalUnknown:
     response = response
     view = view
@@ -107,4 +135,4 @@ class SkipToApprovalUnknown:
     action = action
 
 
-type SkipToApproval = SkipToApprovalYes | SkipToApprovalNo | SkipToApprovalUnknown
+type SkipToApproval = SkipToApprovalYes | SkipToApprovalNo | SkipToApprovalCloseupsPresent | SkipToApprovalUnknown
