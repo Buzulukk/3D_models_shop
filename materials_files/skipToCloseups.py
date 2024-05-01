@@ -15,6 +15,7 @@ class Response:
     class ResponseNo:
         pass
 
+
 def response(self, active_order, tg_message):
     user_id = tg_message["message"]["chat"]["id"]
 
@@ -28,6 +29,8 @@ def response(self, active_order, tg_message):
                                                                                 SingleResponse.SingleResponseYes()))
                 case _:
                     return None
+        case SkipToCloseupsDrawingsPresent(closeups=closeups):
+            return self.closeups.response(active_order, tg_message)
         case SkipToCloseupsUnknown():
             match tg_message["message"]["text"]:
                 case "Продолжить без замеров":
@@ -47,6 +50,8 @@ def view(self, deps):
                 'message': "Хорошо, в таком случае проведите замеры, соберите результаты в файл, после чего нажмите на кнопку “Замеры готовы”",
                 'buttons': ["Замеры готовы"]
             }
+        case SkipToCloseupsDrawingsPresent(closeups=closeups):
+            return closeups.view(deps)
         case SkipToCloseupsUnknown():
             return {
                 'message': "В этих случаях мы рекомендуем всё же провести базовые измерения основных частей товара для получения наилучшего результата. Однако, если вы считаете, что фото содержат достаточно информации о пропорциях товара, вы можете продолжить без замеров.",
@@ -61,7 +66,9 @@ def action(self, response):
         case SkipToCloseupsNo():
             match response:
                 case SingleResponse.SingleResponseYes():
-                    return SkipToCloseupsYes(CloseupsUnknown())
+                    return SkipToCloseupsDrawingsPresent(CloseupsUnknown())
+        case SkipToCloseupsDrawingsPresent(closeups=closeups):
+            return SkipToCloseupsDrawingsPresent(closeups.action(response))
         case SkipToCloseupsUnknown():
             match response:
                 case Response.ResponseYes():
@@ -71,11 +78,19 @@ def action(self, response):
 
 
 def get_set(self, material: Material):
+    material_is_drawings = False
+    match material:
+        case MaterialDrawings():
+            material_is_drawings = True
+
     match self:
         case SkipToCloseupsYes(closeups=closeups):
             return closeups.get_set(material)
         case SkipToCloseupsNo():
             return None
+        case SkipToCloseupsDrawingsPresent(closeups=closeups):
+            return None if closeups.get_set(material) is None \
+                else closeups.get_set(material) or material_is_drawings
         case SkipToCloseupsUnknown():
             return None
 
@@ -99,6 +114,18 @@ class SkipToCloseupsNo:
     action = action
 
 
+class SkipToCloseupsDrawingsPresent:
+    closeups: Closeups
+
+    def __init__(self, closeups: Closeups):
+        self.closeups = closeups
+
+    response = response
+    view = view
+    get_set = get_set
+    action = action
+
+
 class SkipToCloseupsUnknown:
     response = response
     view = view
@@ -106,4 +133,4 @@ class SkipToCloseupsUnknown:
     action = action
 
 
-type SkipToCloseups = SkipToCloseupsYes | SkipToCloseupsNo | SkipToCloseupsUnknown
+type SkipToCloseups = SkipToCloseupsYes | SkipToCloseupsNo | SkipToCloseupsDrawingsPresent | SkipToCloseupsUnknown
