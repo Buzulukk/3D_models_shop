@@ -69,7 +69,7 @@ def get_set(self, material: Material):
                 else closeups.get_set(material) or material_is_drawings
         case DrawingsAbsent(skip=skip):
             return None if skip.get_set(material) is None \
-                else skip.get_set(material) or not material_is_drawings
+                else skip.get_set(material)
         case DrawingsUnknown():
             return None
 

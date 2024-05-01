@@ -71,7 +71,7 @@ def get_set(self, material: Material):
                 else drawings.get_set(material) or material_is_photos
         case PhotosAbsent(drawings_with_closeups=drawings_with_closeups):
             return None if drawings_with_closeups.get_set(material) is None \
-                else drawings_with_closeups.get_set(material) or not material_is_photos
+                else drawings_with_closeups.get_set(material)
         case PhotosUnknown():
             return None
 
