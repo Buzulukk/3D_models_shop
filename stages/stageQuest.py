@@ -1,6 +1,11 @@
 from typing import Any
 
+import effect
 from materials_files import materials, photos
+
+
+class RestartQuestionnaire:
+    pass
 
 
 class Materials:
@@ -10,11 +15,18 @@ class Materials:
         self.action = action
 
 
-type Action = Materials
+type Action = RestartQuestionnaire | Materials
 
 
 def reduce(self, action: Action):
-    return self.materials.reduce(action.action)
+    match action:
+        case RestartQuestionnaire():
+            self.materials = materials.Materials(photos.PhotosUnknown())
+            return [
+                effect.Nothing()
+            ]
+        case Materials(action=action):
+            return self.materials.reduce(action)
 
 
 def response(self, active_order, tg_message):

@@ -34,7 +34,7 @@ def view(self, deps):
     match self:
         case ApprovalYes():
             return {
-                'message': "Завершение опроса"
+                'message': "Сейчас вам нужно будет загрузить файлы необходимые для создания модели"
             }
         case ApprovalNo():
             return {

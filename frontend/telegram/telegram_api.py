@@ -37,8 +37,8 @@ def send_message_with_buttons(chat_id, text, buttons):
     data = {
         "chat_id": chat_id,
         "text": text,
-        "reply_markup": "{\"keyboard\":[[" + ', '.join(f'"{item}"' for item in buttons)
-                        + "]],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
+        "reply_markup": "{\"keyboard\":[" + ', '.join(f"[\"{item}\"]" for item in buttons)
+                    + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
     }
 
     print(requests.post(request_link, data=data))
@@ -49,8 +49,8 @@ def send_questionnaire_question(chat_id, questionnaire_question):
     data = {
         "chat_id": chat_id,
         "text": questionnaire_question['message'],
-        "reply_markup": "{\"keyboard\":[[" + ', '.join(f'"{item}"' for item in questionnaire_question['buttons'])
-                        + "]],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
+        "reply_markup": "{\"keyboard\":[" + ', '.join(f"[\"{item}\"]" for item in questionnaire_question['buttons'])
+                    + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
     }
 
     print(requests.post(request_link, data=data))

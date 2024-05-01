@@ -41,6 +41,13 @@ class QuestionnaireAnswer:
         self.response = response
 
 
+class RestartQuestionnaire:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 class UploadFilesMarkSaved:
     order_id: uuid.UUID
     material: Material
@@ -176,9 +183,9 @@ class FinalPaymentComplete:
 
 
 type Action = (
-        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | UploadFilesMarkSaved | UploadFilesReady |
-        GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract | SendContract | SendContractToManager |
-        CreatePrePayment | PrePaymentComplete | OrderReady | CreateFinalPayment | FinalPaymentComplete)
+        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | RestartQuestionnaire | UploadFilesMarkSaved
+        | UploadFilesReady | GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract
+        | SendContract | SendContractToManager | CreatePrePayment | PrePaymentComplete | OrderReady | CreateFinalPayment | FinalPaymentComplete)
 
 
 def transform(self):
@@ -192,6 +199,8 @@ def transform(self):
         case QuestionnaireAnswer(order_id=order_id, response=response):
             return state.User(self.user_id,
                               user.Order(order_id, order.Stage(stageQuest.Materials(materials.Change(response)))))
+        case RestartQuestionnaire(order_id=order_id):
+            return state.User(self.user_id, user.Order(order_id, order.Stage(stageQuest.RestartQuestionnaire())))
         case UploadFilesMarkSaved(order_id=order_id, material=material, file_id=file_id):
             return state.User(self.user_id,
                               user.Order(order_id, order.Stage(

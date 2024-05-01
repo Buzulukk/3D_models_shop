@@ -24,7 +24,22 @@ def effects_handler(user_id, effects: []):
                 print(message)
                 print(buttons)
             case effect.View():
-                telegram_api.send_questionnaire_question(user_id, main_state.view(user_id))
+                view_result = main_state.view(user_id)
+
+                if 'buttons' in view_result:
+                    telegram_api.send_questionnaire_question(user_id, view_result)
+                else:
+                    telegram_api.send_message(user_id, view_result['message'])
+
+                order_id = main_state.users[user_id].active_order
+                match view_result['message']:
+                    case "В таком случае, чтобы во всём убедиться, я проведу опрос заново":
+                        main_state.reduce(command.Command(user_id, command.RestartQuestionnaire(order_id)).transform())
+                        effects_handler(user_id, [effect.View()])
+                    case "Сейчас вам нужно будет загрузить файлы необходимые для создания модели":
+                        materials_set = main_state.get_set(user_id, order_id)
+                        effects_handler(user_id, main_state.view_files(user_id, order_id, materials_set[0], materials_set))
+
             case effect.Contract(contract=some_contract):
                 match some_contract:
                     case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,

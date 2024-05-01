@@ -37,14 +37,6 @@ class View:
     pass
 
 
-class StopQuestionnaire:
-    pass
-
-
-class RepeatQuestionnaire:
-    pass
-
-
 class Contract:
     contract: Any  # change to file type later
 
@@ -66,5 +58,4 @@ class File:
         self.file = file
 
 
-type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | View | StopQuestionnaire |
-               RepeatQuestionnaire | Contract | Payment | File)
+type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | View | Contract | Payment | File)
