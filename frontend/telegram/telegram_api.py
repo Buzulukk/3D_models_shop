@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+from frontend.saves.files import save_file
 
 import main
 
@@ -15,9 +16,12 @@ def handle_webhook():
     data = request.get_json()
     print("Received data:", data)
 
-    command = main.main_state.response(data)
-    effects = main.main_state.reduce(command.transform())
-    main.effects_handler(command.user_id, effects)
+    if "text" not in data["message"]:
+        save_file(BOT_TOKEN, data)
+    else:
+        command = main.main_state.response(data)
+        effects = main.main_state.reduce(command.transform())
+        main.effects_handler(command.user_id, effects)
 
     return jsonify(success=True)
 
@@ -38,7 +42,7 @@ def send_message_with_buttons(chat_id, text, buttons):
         "chat_id": chat_id,
         "text": text,
         "reply_markup": "{\"keyboard\":[" + ', '.join(f"[\"{item}\"]" for item in buttons)
-                    + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
+                        + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
     }
 
     print(requests.post(request_link, data=data))
@@ -50,7 +54,7 @@ def send_questionnaire_question(chat_id, questionnaire_question):
         "chat_id": chat_id,
         "text": questionnaire_question['message'],
         "reply_markup": "{\"keyboard\":[" + ', '.join(f"[\"{item}\"]" for item in questionnaire_question['buttons'])
-                    + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
+                        + "],\"one_time_keyboard\":true,\"resize_keyboard\":true}"
     }
 
     print(requests.post(request_link, data=data))
