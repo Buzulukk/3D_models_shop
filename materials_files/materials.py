@@ -2,6 +2,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
+import command
 import effect
 from materials_files.material import *
 from materials_files.photos import Photos
@@ -158,7 +159,17 @@ def reduce(self, action: Action):
 
 
 def response(self, active_order, tg_message):
-    return self.photos.response(active_order, tg_message)
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match tg_message["message"]["text"]:
+        case "Загрузить фотографии товара":
+            return command.Command(user_id, command.ViewFiles(MaterialPhotos()))
+        case "Загрузить файлы чертежей":
+            return command.Command(user_id, command.ViewFiles(MaterialDrawings()))
+        case "Загрузить фотографии материалов":
+            return command.Command(user_id, command.ViewFiles(MaterialCloseups()))
+        case _:
+            return self.photos.response(active_order, tg_message)
 
 
 @dataclass

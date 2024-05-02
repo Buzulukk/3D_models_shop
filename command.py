@@ -48,6 +48,13 @@ class RestartQuestionnaire:
         self.order_id = order_id
 
 
+class ViewFiles:
+    material: Material
+
+    def __init__(self, material: Material):
+        self.material = material
+
+
 class UploadFilesMarkSaved:
     order_id: uuid.UUID
     material: Material
@@ -183,7 +190,7 @@ class FinalPaymentComplete:
 
 
 type Action = (
-        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | RestartQuestionnaire | UploadFilesMarkSaved
+        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | RestartQuestionnaire | ViewFiles | UploadFilesMarkSaved
         | UploadFilesReady | GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract
         | SendContract | SendContractToManager | CreatePrePayment | PrePaymentComplete | OrderReady | CreateFinalPayment | FinalPaymentComplete)
 
@@ -201,6 +208,8 @@ def transform(self):
                               user.Order(order_id, order.Stage(stageQuest.Materials(materials.Change(response)))))
         case RestartQuestionnaire(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageQuest.RestartQuestionnaire())))
+        case ViewFiles(material=material):
+            return state.ViewFiles(self.user_id, material)
         case UploadFilesMarkSaved(order_id=order_id, material=material, file_id=file_id):
             return state.User(self.user_id,
                               user.Order(order_id, order.Stage(

@@ -6,6 +6,7 @@ import command
 import user
 import effect
 from materials_files.materials import Materials
+from materials_files.material import Material
 
 
 class CreateUser:
@@ -24,7 +25,16 @@ class User:
         self.action = action
 
 
-type Action = CreateUser | User
+class ViewFiles:
+    user_id: uuid.UUID
+    material: Material
+
+    def __init__(self, user_id: uuid.UUID, material: Material):
+        self.user_id = user_id
+        self.material = material
+
+
+type Action = CreateUser | User | ViewFiles
 
 
 def reduce(self, action: Action):
@@ -37,6 +47,9 @@ def reduce(self, action: Action):
                     ["Заказать модель"]
                 )
             ]
+        case ViewFiles(user_id=user_id, material=material):
+            materials_set = self.get_set(user_id, self.users[user_id].active_order)
+            return self.view_files(user_id, self.users[user_id].active_order, material, materials_set)
         case User(user_id=user_id, action=action):
             return self.users[user_id].reduce(action)
 

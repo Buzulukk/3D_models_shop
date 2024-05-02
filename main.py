@@ -38,7 +38,9 @@ def effects_handler(user_id, effects: []):
                         effects_handler(user_id, [effect.View()])
                     case "Сейчас вам нужно будет загрузить файлы необходимые для создания модели":
                         materials_set = main_state.get_set(user_id, order_id)
-                        effects_handler(user_id, main_state.view_files(user_id, order_id, materials_set[0], materials_set))
+                        effects = main_state.reduce(
+                            command.Command(user_id, command.ViewFiles(materials_set[0])).transform())
+                        effects_handler(user_id, effects)
 
             case effect.Contract(contract=some_contract):
                 match some_contract:
@@ -55,7 +57,6 @@ def effects_handler(user_id, effects: []):
                 print(payment, payment.info["price"])
             case effect.File(file=file):
                 print(file)
-
 
 # if __name__ == '__main__':
 #     main_state = state.State()
