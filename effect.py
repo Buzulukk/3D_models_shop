@@ -58,4 +58,8 @@ class File:
         self.file = file
 
 
-type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | View | Contract | Payment | File)
+class SendInfoToManager:
+    pass
+
+
+type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | SendInfoToManager | View | Contract | Payment | File)

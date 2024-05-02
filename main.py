@@ -2,6 +2,7 @@ import uuid
 
 import command
 from frontend.telegram import telegram_api
+from frontend import contactManager
 from materials_files import material, photos, drawings, closeups, drawingsWithCloseups, approval, skipToCloseups, \
     skipToApproval
 import state
@@ -41,7 +42,8 @@ def effects_handler(user_id, effects: []):
                         effects = main_state.reduce(
                             command.Command(user_id, command.ViewFiles(materials_set[0])).transform())
                         effects_handler(user_id, effects)
-
+            case effect.SendInfoToManager():
+                contactManager.send_info_to_manager()
             case effect.Contract(contract=some_contract):
                 match some_contract:
                     case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,
