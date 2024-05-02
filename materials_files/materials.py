@@ -42,6 +42,8 @@ def view(self):
 def view_files(self, material: Material, materials_set: Any):
     match material:
         case MaterialPhotos():
+            self.active_files_type = MaterialPhotos()
+
             buttons = []
             for el in materials_set:
                 match el:
@@ -57,6 +59,8 @@ def view_files(self, material: Material, materials_set: Any):
                 )
             ]
         case MaterialDrawings():
+            self.active_files_type = MaterialDrawings()
+
             buttons = []
             for el in materials_set:
                 match el:
@@ -72,6 +76,8 @@ def view_files(self, material: Material, materials_set: Any):
                 )
             ]
         case MaterialCloseups():
+            self.active_files_type = MaterialCloseups()
+
             buttons = []
             for el in materials_set:
                 match el:
@@ -174,6 +180,7 @@ def response(self, active_order, tg_message):
 
 @dataclass
 class Materials:
+    active_files_type: Material
     photos: Photos
     files: dict
     files_ready: bool
