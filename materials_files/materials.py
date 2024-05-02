@@ -140,21 +140,21 @@ def reduce(self, action: Action):
                         if len(self.files['photos']) == 0:
                             return [
                                 effect.Message(
-                                    "Вы не загрузили файлы фотографий вашего товара. Загрузите их, чтобы продолжить."
+                                    "Вы не загрузили файлы фотографий вашего товара. Нажмите на соответствующую кнопку в меню и загрузите файлы"
                                 )
                             ]
                     case MaterialDrawings():
                         if len(self.files['drawings']) == 0:
                             return [
                                 effect.Message(
-                                    "Вы не загрузили файлы чертежей вашего товара. Загрузите их, чтобы продолжить."
+                                    "Вы не загрузили файлы чертежей вашего товара. Нажмите на соответствующую кнопку в меню и загрузите файлы"
                                 )
                             ]
                     case MaterialCloseups():
                         if len(self.files['closeups']) == 0:
                             return [
                                 effect.Message(
-                                    "Вы не загрузили файлы фотографий материалов. Загрузите их, чтобы продолжить."
+                                    "Вы не загрузили файлы фотографий материалов. Нажмите на соответствующую кнопку в меню и загрузите файлы"
                                 )
                             ]
             self.files_ready = True
@@ -174,6 +174,8 @@ def response(self, active_order, tg_message):
             return command.Command(user_id, command.ViewFiles(MaterialDrawings()))
         case "Загрузить фотографии материалов":
             return command.Command(user_id, command.ViewFiles(MaterialCloseups()))
+        case "Готово":
+            return command.Command(user_id, command.UploadFilesReady(active_order, self.get_set()))
         case _:
             return self.photos.response(active_order, tg_message)
 
