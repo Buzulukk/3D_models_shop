@@ -7,4 +7,4 @@ def send_info_to_manager():
         "info": "some_text"
     }
 
-    print(requests.post(request_link))
+    print(requests.post(request_link, json=data))
