@@ -56,6 +56,7 @@ def response(self, tg_message):
 
     match tg_message["message"]["text"]:
         case "Заказать модель":
+            self.user_name = tg_message["message"]["chat"]["username"]
             return command.Command(user_id, command.CreateOrder(uuid.uuid4()))
         case _:
             return self.orders[self.active_order].response(self.active_order, tg_message)
@@ -80,11 +81,13 @@ def ask_info_for_contract(self, order_id: uuid.UUID):
 @dataclass
 class User:
     user_id: uuid.UUID
+    user_name: str
     orders: {uuid.UUID, order.Order}
     active_order: uuid.UUID
 
     def __init__(self, user_id: uuid.UUID):
         self.user_id = user_id
+        self.user_name = ""
         self.orders = {}
         self.active_order = None
 

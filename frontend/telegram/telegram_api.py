@@ -1,14 +1,25 @@
-from flask import Flask, request, jsonify
+import os
+
 import requests
+from flask import request, jsonify, Flask, send_from_directory
+
+from stateManager import main_state
+from main import effects_handler
 from frontend.saves.files import save_file
 
-import main
-
-# from frontend.telegram.telegram_core import response_handler
+BOT_TOKEN = '6947052492:AAECxz7hadze_qAJqiZpWEYVN-iivn8-4_Y'
 
 app = Flask(__name__)
 
-BOT_TOKEN = '6947052492:AAECxz7hadze_qAJqiZpWEYVN-iivn8-4_Y'
+
+# example of getting some file
+# http://localhost:8000/download/863600387/94bb87eb-3d4e-447c-8ded-395eb40e7d3d/files/photos/2xo2ka__01.jpg
+
+@app.route('/download/<path:filename>')
+def download_file(filename):
+    directory = os.path.abspath(os.path.join(app.root_path, '../saves/saves'))
+    print(directory)
+    return send_from_directory(directory, filename, as_attachment=True)
 
 
 @app.route('/telegram_webhooks_endpoint', methods=['POST'])
@@ -19,9 +30,9 @@ def handle_webhook():
     if "text" not in data["message"]:
         save_file(BOT_TOKEN, data)
     else:
-        command = main.main_state.response(data)
-        effects = main.main_state.reduce(command.transform())
-        main.effects_handler(command.user_id, effects)
+        command = main_state.response(data)
+        effects = main_state.reduce(command.transform())
+        effects_handler(command.user_id, effects)
 
     return jsonify(success=True)
 

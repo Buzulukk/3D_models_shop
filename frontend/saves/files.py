@@ -3,17 +3,17 @@ import os
 import requests
 
 import command
-import main
+from stateManager import main_state
 from materials_files.material import MaterialPhotos, MaterialDrawings, MaterialCloseups
 
 
 def save_file(bot_token, tg_message):
     user_id = tg_message["message"]["chat"]["id"]
-    order_id = main.main_state.users[user_id].active_order
+    order_id = main_state.users[user_id].active_order
 
     file_name = tg_message["message"]["document"]["file_name"]
 
-    material_type = (main.main_state.users[user_id].orders[order_id]
+    material_type = (main_state.users[user_id].orders[order_id]
                      .stage.body.materials.active_files_type)
 
     file_type_name = None
@@ -38,5 +38,5 @@ def save_file(bot_token, tg_message):
     if response.status_code == 200:
         with open(save_path, 'wb') as file:
             file.write(response.content)
-            main.main_state.reduce(
+            main_state.reduce(
                 command.Command(user_id, command.UploadFilesMarkSaved(order_id, material_type, file_name)).transform())
