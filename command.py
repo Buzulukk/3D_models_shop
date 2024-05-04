@@ -23,6 +23,13 @@ class CreateOrder:
         self.order_id = order_id
 
 
+class RemoveOrder:
+    order_id: uuid.UUID
+
+    def __init__(self, order_id: uuid.UUID):
+        self.order_id = order_id
+
+
 class SetOrderName:
     order_id: uuid.UUID
     order_name: str
@@ -190,7 +197,7 @@ class FinalPaymentComplete:
 
 
 type Action = (
-        Start | CreateOrder | SetOrderName | QuestionnaireAnswer | RestartQuestionnaire | ViewFiles | UploadFilesMarkSaved
+        Start | CreateOrder | RemoveOrder | SetOrderName | QuestionnaireAnswer | RestartQuestionnaire | ViewFiles | UploadFilesMarkSaved
         | UploadFilesReady | GetInfoFromManager | CreateContract | AsIndividual | AsCompany | AddInfoForContract
         | SendContract | SendContractToManager | CreatePrePayment | PrePaymentComplete | OrderReady | CreateFinalPayment | FinalPaymentComplete)
 
@@ -201,6 +208,8 @@ def transform(self):
             return state.CreateUser(self.user_id)
         case CreateOrder(order_id=order_id):
             return state.User(self.user_id, user.CreateOrder(order_id))
+        case RemoveOrder(order_id=order_id):
+            return state.User(self.user_id, user.RemoveOrder(order_id))
         case SetOrderName(order_id=order_id, order_name=order_name):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageBase.SetOrderName(order_name))))
         case QuestionnaireAnswer(order_id=order_id, response=response):

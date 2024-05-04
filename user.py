@@ -45,7 +45,7 @@ def reduce(self, action: Action):
         case RemoveOrder(order_id=order_id):
             del self.orders[order_id]
             return [
-                effect.Message("Заказ удален")
+                effect.Message("Ваш заказ отменён")
             ]
         case Order(order_id=order_id, action=action):
             return self.orders[order_id].reduce(action)

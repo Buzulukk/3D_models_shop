@@ -1,3 +1,4 @@
+import command
 import effect
 
 
@@ -23,7 +24,20 @@ def reduce(self, action: Action):
             ]
 
 
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    match tg_message["message"]["text"]:
+        case "Утвердить":
+            return command.Command(user_id, command.CreateContract(active_order, self.price))
+        case "Отменить заказ":
+            return command.Command(user_id, command.RemoveOrder(active_order))
+        case _:
+            return None
+
+
 class Matter:
     price: int
 
     reduce = reduce
+    response = response
