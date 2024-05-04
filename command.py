@@ -250,10 +250,10 @@ def transform(self):
 
 @dataclass
 class Command:
-    user_id: uuid.UUID
+    user_id: int
     action: Action
 
-    def __init__(self, user_id: uuid.UUID, action: Action):
+    def __init__(self, user_id: int, action: Action):
         self.user_id = user_id
         self.action = action
 

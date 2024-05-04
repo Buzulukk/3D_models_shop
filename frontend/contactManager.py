@@ -10,16 +10,21 @@ def send_info_to_manager(user_id):
 
     photos_links = []
     photos_path = "frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files/photos"
-    for file in os.listdir(photos_path):
-        photos_links.append(os.path.join(photos_path, file)[21:])
+    if "photos" in os.listdir("frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files"):
+        for file in os.listdir(photos_path):
+            photos_links.append(os.path.join(photos_path, file)[21:])
+
     drawings_links = []
     drawings_path = "frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files/drawings"
-    for file in os.listdir(drawings_path):
-        drawings_links.append(os.path.join(drawings_path, file)[21:])
+    if "drawings" in os.listdir("frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files"):
+        for file in os.listdir(drawings_path):
+            drawings_links.append(os.path.join(drawings_path, file)[21:])
+
     closeups_links = []
     closeups_path = "frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files/closeups"
-    for file in os.listdir(closeups_path):
-        closeups_links.append(os.path.join(closeups_path, file)[21:])
+    if "closeups" in os.listdir("frontend/saves/saves/" + str(user_id) + "/" + str(order_id) + "/files"):
+        for file in os.listdir(closeups_path):
+            closeups_links.append(os.path.join(closeups_path, file)[21:])
 
     data = {
         "chat_id": user_id,
