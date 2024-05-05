@@ -4,6 +4,7 @@ import effect
 
 from stateManager import main_state
 from frontend import contactManager
+from frontend.contract import createContract
 from frontend.telegram import telegram_api
 
 
@@ -43,15 +44,7 @@ def effects_handler(user_id, effects: []):
             case effect.SendInfoToManager():
                 contactManager.send_info_to_manager(user_id)
             case effect.Contract(contract=some_contract):
-                match some_contract:
-                    case contractInfo.IndividualContract(full_name=full_name, birthday=birthday,
-                                                         passport_number=passport_number, issued_by=issued_by,
-                                                         issued_by_number=issued_by_number, address=address):
-                        print(full_name, '•', birthday, '•', passport_number, '•', issued_by, '•', issued_by_number,
-                              '•', address)
-                    case contractInfo.CompanyContract(full_name=full_name, position=position,
-                                                      taxpayer_number=taxpayer_number):
-                        print(full_name, '•', position, '•', taxpayer_number)
+                createContract.create_pdf(user_id, main_state.users[user_id].active_order, some_contract)
             case effect.Payment(payment=payment):
                 print("Пожалуйста, оплатите:")
                 print(payment, payment.info["price"])

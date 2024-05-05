@@ -109,8 +109,10 @@ class AsIndividual:
     issued_by_number: str
     address: str
 
-    def __init__(self, full_name: str, birthday: datetime.datetime, passport_number: str, issued_by: str,
+    def __init__(self, order_id: uuid.UUID, full_name: str, birthday: datetime.datetime, passport_number: str,
+                 issued_by: str,
                  issued_by_number: str, address: str):
+        self.order_id = order_id
         self.full_name = full_name
         self.birthday = birthday
         self.passport_number = passport_number

@@ -98,7 +98,7 @@ def response(self, active_order, tg_message):
     else:
         match tg_message["message"]["text"]:
             case "Физлицо":
-                return command.Command(user_id, command.AsIndividual(active_order, None, None, None, None, None))
+                return command.Command(user_id, command.AsIndividual(active_order, None, None, None, None, None, None))
             case "Юрлицо":
                 return command.Command(user_id, command.AsCompany(active_order, None, None, None))
             case _:
