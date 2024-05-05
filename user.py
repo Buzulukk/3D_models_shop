@@ -74,8 +74,8 @@ def get_set(self, order_id: uuid.UUID):
     return self.orders[order_id].get_set()
 
 
-def ask_info_for_contract(self, order_id: uuid.UUID):
-    return self.orders[order_id].ask_info_for_contract()
+def ask_info_for_contract(self):
+    return self.orders[self.active_order].ask_info_for_contract()
 
 
 @dataclass

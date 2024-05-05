@@ -37,6 +37,10 @@ class View:
     pass
 
 
+class AskInfoForContract:
+    pass
+
+
 class Contract:
     contract: Any  # change to file type later
 
@@ -62,4 +66,6 @@ class SendInfoToManager:
     pass
 
 
-type Effect = (Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | SendInfoToManager | View | Contract | Payment | File)
+type Effect = (
+        Nothing | Message | MessageWithButtons | MessageWithLinksAndButtons | SendInfoToManager | View
+        | AskInfoForContract | Contract | Payment | File)

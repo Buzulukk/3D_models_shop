@@ -242,7 +242,8 @@ def transform(self):
                 stageContract.AsCompany(full_name, position, taxpayer_number))))
         case AddInfoForContract(order_id=order_id, data=data):
             return state.User(self.user_id,
-                              user.Order(order_id, order.Stage(stageContract.ContractInfo(contractInfo.Change(data)))))
+                              user.Order(order_id,
+                                         order.Stage(stageContract.AddContractInfo(contractInfo.Change(data)))))
         case SendContractToManager(order_id=order_id):
             return state.User(self.user_id, user.Order(order_id, order.Stage(stageContract.SendContractToManager())))
         case CreatePrePayment(order_id=order_id, price=price):

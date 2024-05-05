@@ -37,6 +37,9 @@ def effects_handler(user_id, effects: []):
                         effects = main_state.reduce(
                             command.Command(user_id, command.ViewFiles(materials_set[0])).transform())
                         effects_handler(user_id, effects)
+            case effect.AskInfoForContract():
+                effects = main_state.ask_info_for_contract(user_id)
+                effects_handler(user_id, effects)
             case effect.SendInfoToManager():
                 contactManager.send_info_to_manager(user_id)
             case effect.Contract(contract=some_contract):

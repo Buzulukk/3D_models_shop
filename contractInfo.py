@@ -1,6 +1,7 @@
 import datetime
 from typing import Any
 
+import command
 import effect
 
 
@@ -57,36 +58,42 @@ def reduce(self, action: Action):
                                         issued_by=issued_by, issued_by_number=issued_by_number, address=address):
                     if not full_name:
                         self.full_name = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not birthday:
                         self.birthday = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not passport_number:
                         self.passport_number = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not issued_by:
                         self.issued_by = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not issued_by_number:
                         self.issued_by_number = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not address:
                         self.address = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     else:
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                 case CompanyContract(full_name=full_name, position=position, taxpayer_number=taxpayer_number):
                     if not full_name:
                         self.full_name = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not position:
                         self.position = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     elif not taxpayer_number:
                         self.taxpayer_number = data
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
                     else:
-                        return [effect.Nothing()]
+                        return [effect.AskInfoForContract()]
+
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    return command.Command(user_id, command.AddInfoForContract(active_order, tg_message["message"]["text"]))
 
 
 class IndividualContract:
@@ -107,6 +114,7 @@ class IndividualContract:
         self.address = address
 
     reduce = reduce
+    response = response
     ask_info_for_contract = ask_info_for_contract
 
 
@@ -121,6 +129,7 @@ class CompanyContract:
         self.taxpayer_number = taxpayer_number
 
     reduce = reduce
+    response = response
     ask_info_for_contract = ask_info_for_contract
 
 

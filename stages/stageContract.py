@@ -1,3 +1,4 @@
+import command
 import contractInfo
 import effect
 import payment
@@ -46,14 +47,14 @@ class SendContractToManager:
     pass
 
 
-class ContractInfo:
+class AddContractInfo:
     action: contractInfo.Action
 
     def __init__(self, action: contractInfo.Action):
         self.action = action
 
 
-type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | ContractInfo)
+type Action = (CreateContract | AsIndividual | AsCompany | SendContractToManager | AddContractInfo)
 
 
 def reduce(self, action: Action):
@@ -72,19 +73,36 @@ def reduce(self, action: Action):
                                                address)
             return [
                 effect.Message("Вам необходимо указать некоторые данные для составления контракта"),
+                effect.AskInfoForContract()
             ]
         case AsCompany(full_name=full_name, position=position, taxpayer_number=taxpayer_number):
             self.contract = CompanyContract(full_name, position, taxpayer_number)
             return [
                 effect.Message("Вам необходимо указать некоторые данные для составления контракта"),
+                effect.AskInfoForContract()
             ]
         case SendContractToManager():
             return [
                 effect.Message(
                     "Отлично. Договор отправлен для проверки менеджеру. Это займёт не больше часа в рабочее время, после чего мы тут-же с вами свяжемся.")
             ]
-        case ContractInfo(action=action):
+        case AddContractInfo(action=action):
             return self.contract.reduce(action)
+
+
+def response(self, active_order, tg_message):
+    user_id = tg_message["message"]["chat"]["id"]
+
+    if self.contract is not None:
+        return self.contract.response(active_order, tg_message)
+    else:
+        match tg_message["message"]["text"]:
+            case "Физлицо":
+                return command.Command(user_id, command.AsIndividual(active_order, None, None, None, None, None))
+            case "Юрлицо":
+                return command.Command(user_id, command.AsCompany(active_order, None, None, None))
+            case _:
+                return None
 
 
 def ask_info_for_contract(self):
@@ -98,4 +116,5 @@ class Contract:
         self.contract = contract
 
     reduce = reduce
+    response = response
     ask_info_for_contract = ask_info_for_contract
